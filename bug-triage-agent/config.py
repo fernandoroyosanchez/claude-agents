@@ -2,14 +2,27 @@
 Configuration management for the bug triage agent.
 
 Loads configuration from config.json or environment variables.
+Uses global project configuration as fallback for project-specific settings.
 """
 from pathlib import Path
-from agents_lib import load_agent_config, apply_cutoff_date, expand_config_paths, expand_context_config
+from agents_lib import (
+    load_agent_config,
+    apply_cutoff_date,
+    expand_config_paths,
+    expand_context_config,
+    PROJECT,
+)
 
 
 def load_config():
     """
     Load configuration from config.json or config.sample.json.
+
+    Uses global project configuration (PROJECT) as fallback for:
+    - launchpad_project
+    - triages_output_dir
+    - triage_tracking_file
+    - search_repos
 
     Environment variables override config file settings:
     - TRIAGES_OUTPUT_DIR: Override triages_output_dir
@@ -33,9 +46,35 @@ def load_config():
         "CLAUDE_MODEL": "model",
     }
 
-    # Load config using shared library
-    defaults = {"model": "claude-sonnet-4-6"}
+    # Load config using shared library with project-aware defaults
+    defaults = {
+        "model": "claude-sonnet-4-6",
+        "launchpad_project": PROJECT.launchpad,
+        "launchpad_tags": PROJECT.launchpad_tags,
+        "triages_output_dir": PROJECT.triages_dir,
+        "triage_tracking_file": PROJECT.triage_tracking_file,
+        "search_repos": PROJECT.repos,
+        "devstack_path": "/opt/stack",
+        "max_bugs_per_run": 5,
+        "bug_statuses": ["New", "Confirmed", "Triaged", "In Progress"],
+    }
     config = load_agent_config(config_dir, env_overrides, defaults)
+
+    # Apply project-specific defaults if not in config
+    if "launchpad_project" not in config or not config.get("launchpad_project"):
+        config["launchpad_project"] = PROJECT.launchpad
+
+    if "launchpad_tags" not in config or config.get("launchpad_tags") is None:
+        config["launchpad_tags"] = PROJECT.launchpad_tags
+
+    if "triages_output_dir" not in config or not config.get("triages_output_dir"):
+        config["triages_output_dir"] = PROJECT.triages_dir
+
+    if "triage_tracking_file" not in config or not config.get("triage_tracking_file"):
+        config["triage_tracking_file"] = PROJECT.triage_tracking_file
+
+    if "search_repos" not in config or not config.get("search_repos"):
+        config["search_repos"] = PROJECT.repos
 
     # Apply cutoff date logic (default to 30 days ago)
     config = apply_cutoff_date(config, "cutoff_date", default_days=30)
@@ -57,6 +96,10 @@ def load_config():
     )
 
     config = expand_context_config(config)
+
+    # Add project metadata for reference
+    config["_project"] = PROJECT.to_dict()
+
     return config
 
 

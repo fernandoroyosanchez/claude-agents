@@ -110,6 +110,13 @@ from .forge_feedback import (
     extract_devstack_forge_comment,
     determine_backport_vote,
 )
+from .project_config import (
+    load_project_config,
+    get_project,
+    reload_project_config,
+    ProjectConfig,
+    PROJECT,
+)
 
 __all__ = [
     # git_info
@@ -207,4 +214,10 @@ __all__ = [
     "post_report_to_launchpad",
     "find_latest_report",
     "read_feedback_file",
+    # project_config
+    "load_project_config",
+    "get_project",
+    "reload_project_config",
+    "ProjectConfig",
+    "PROJECT",
 ]

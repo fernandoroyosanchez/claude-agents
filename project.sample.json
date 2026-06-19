@@ -1,0 +1,52 @@
+{
+  "comment": "Copy this file to project.json and customize for your OpenStack project",
+  "comment2": "This file configures which project the agents monitor (octavia, neutron, nova, etc.)",
+  "comment3": "All agents will adapt automatically: CLI commands, output paths, repos, etc.",
+
+  "project": {
+    "name": "octavia",
+    "comment_name": "Full project name (display purposes)",
+
+    "slug": "octavia",
+    "comment_slug": "Filesystem-safe identifier used in paths, CLI commands, systemd units. If omitted, defaults to lowercased name with slashes replaced by dashes.",
+
+    "launchpad": "octavia",
+    "comment_launchpad": "Launchpad project identifier (e.g., 'neutron' for ovn-octavia-provider)",
+
+    "launchpad_tags": [],
+    "comment_launchpad_tags": "Optional list of tags to filter bugs (e.g., ['ovn-octavia-provider'] to only get bugs tagged with that). Leave empty for no tag filtering.",
+
+    "repos": [
+      "openstack/octavia",
+      "openstack/octavia-lib",
+      "openstack/octavia-tempest-plugin",
+      "openstack/python-octaviaclient"
+    ],
+    "comment_repos": "Git repositories to monitor for code reviews, CI failures, etc. Format: 'org/repo'",
+
+    "devstack_services": [
+      "devstack@o-api.service",
+      "devstack@o-cw.service",
+      "devstack@o-hm.service",
+      "devstack@o-hk.service"
+    ],
+    "comment_devstack": "systemd service names for health checks. Leave empty if project has no DevStack services.",
+
+    "triages_dir": "~/octavia_bug_triages",
+    "reviews_dir": "~/octavia_reviews",
+    "ci_failures_dir": "~/octavia_ci_failures",
+    "reproductions_dir": "~/octavia_bug_reproductions",
+    "devstack_tests_dir": "~/octavia_devstack_tests",
+    "fix_proposals_dir": "~/octavia_fix_proposals",
+    "fix_verifications_dir": "~/octavia_fix_verifications",
+    "comment_dirs": "Output directories. Defaults: ~/{slug}_bug_triages, ~/{slug}_reviews, etc. Can override here.",
+
+    "triage_tracking_file": "~/.octavia_bug_triages.json",
+    "review_tracking_file": "~/.octavia_reviewed_changes.json",
+    "ci_tracking_file": "~/.octavia_ci_failures.json",
+    "reproduction_tracking_file": "~/.octavia_bug_reproductions.json",
+    "proposal_tracking_file": "~/.octavia_fix_proposals.json",
+    "verification_tracking_file": "~/.octavia_fix_verifications.json",
+    "comment_tracking": "Tracking files. Defaults: ~/.{slug}_bug_triages.json, etc. Can override here."
+  }
+}

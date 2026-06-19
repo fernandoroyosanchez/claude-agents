@@ -1,0 +1,22 @@
+{
+  "comment": "Example project configuration for ovn-octavia-provider",
+  "comment2": "Copy to project.json or ~/.config/claude-agents/project.json",
+
+  "project": {
+    "name": "ovn-octavia-provider",
+    "slug": "ovn-octavia",
+    "launchpad": "neutron",
+    "launchpad_tags": ["ovn-octavia-provider"],
+
+    "repos": [
+      "openstack/networking-ovn",
+      "openstack/ovn-octavia-provider"
+    ],
+
+    "devstack_services": [
+      "devstack@q-ovn-metadata-agent.service",
+      "devstack@ovn-controller.service",
+      "devstack@ovn-northd.service"
+    ]
+  }
+}

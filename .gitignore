@@ -26,9 +26,14 @@ config.json
 # Shared notification channel config (contains credentials)
 notifications.json
 
+# Project configuration (user-specific project settings)
+/project.json
+
 # Keep sample configs so new users can copy them
 !config.sample.json
 !notifications.sample.json
+!project.sample.json
+!project.*.json
 
 # ── Agent output files ──────────────────────────────────────────────────────────
 # Triage reports

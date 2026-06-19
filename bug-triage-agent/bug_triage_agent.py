@@ -95,7 +95,7 @@ def _post_bug_feedback(bug_info: dict, triage_file: "Path", config: dict) -> Non
         print(f"   ⚠️  Could not post Launchpad feedback: {exc}")
 
 
-async def fetch_bugs_from_launchpad(project: str, statuses: list, max_bugs: int = 10):
+async def fetch_bugs_from_launchpad(project: str, statuses: list, max_bugs: int = 10, tags: list = None):
     """
     Fetch bugs from Launchpad API.
 
@@ -103,6 +103,7 @@ async def fetch_bugs_from_launchpad(project: str, statuses: list, max_bugs: int 
         project: Launchpad project name (e.g., "octavia")
         statuses: List of bug statuses to fetch
         max_bugs: Maximum number of bugs to fetch
+        tags: Optional list of tags to filter bugs (AND logic)
 
     Returns:
         List of bug dictionaries
@@ -110,11 +111,18 @@ async def fetch_bugs_from_launchpad(project: str, statuses: list, max_bugs: int 
     print(f"\n🔍 Fetching bugs from Launchpad for {project}...")
 
     # Construct Launchpad API URL
-    # Format: https://api.launchpad.net/1.0/<project>?ws.op=searchTasks&status=New&status=Confirmed
+    # Format: https://api.launchpad.net/1.0/<project>?ws.op=searchTasks&status=New&status=Confirmed&tags=tag1&tags=tag2
     status_params = '&'.join([f'status={s}' for s in statuses])
+
+    # Add tag filtering if specified
+    tags_params = ''
+    if tags:
+        tags_params = '&' + '&'.join([f'tags={t}' for t in tags])
+        print(f"   Filtering by tags: {', '.join(tags)}")
+
     launchpad_url = (
         f"{CONFIG['launchpad_api_url']}/{project}?"
-        f"ws.op=searchTasks&{status_params}&order_by=-date_last_updated"
+        f"ws.op=searchTasks&{status_params}{tags_params}&order_by=-date_last_updated"
     )
 
     try:
@@ -456,10 +464,12 @@ async def monitor_and_triage(project: str, max_bugs: int = 5):
     history = load_triage_history(tracking_file)
 
     # Fetch bugs from Launchpad
+    tags = CONFIG.get('launchpad_tags')
     bugs = await fetch_bugs_from_launchpad(
         project,
         CONFIG['bug_statuses'],
-        max_bugs * 2  # Fetch more since some might be skipped
+        max_bugs * 2,  # Fetch more since some might be skipped
+        tags=tags if tags else None
     )
 
     if not bugs:
