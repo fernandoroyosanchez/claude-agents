@@ -117,6 +117,11 @@ from .project_config import (
     ProjectConfig,
     PROJECT,
 )
+from .cli_wrapper import (
+    generate_cli_wrapper,
+    install_cli_wrappers,
+    get_agent_cli_configs,
+)
 
 __all__ = [
     # git_info
@@ -220,4 +225,8 @@ __all__ = [
     "reload_project_config",
     "ProjectConfig",
     "PROJECT",
+    # cli_wrapper
+    "generate_cli_wrapper",
+    "install_cli_wrappers",
+    "get_agent_cli_configs",
 ]

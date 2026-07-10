@@ -34,6 +34,7 @@ from agents_lib import (
     load_notifications_config,
     post_report_to_launchpad,
     find_latest_report,
+    PROJECT,
 )
 from launchpad_feedback import (
     get_gerrit_comments_since,
@@ -59,12 +60,12 @@ _CONFIG_DIR = Path(__file__).parent
 _DEFAULTS = {
     "model": "claude-sonnet-4-6",
     "model_provider": "anthropic",
-    "triage_reports_dir": "~/octavia_bug_triages",
-    "reproduction_reports_dir": "~/octavia_bug_reproductions",
-    "proposals_output_dir": "~/octavia_fix_proposals",
-    "proposal_tracking_file": "~/.octavia_fix_proposals.json",
+    "triage_reports_dir": PROJECT.triages_dir,
+    "reproduction_reports_dir": PROJECT.reproductions_dir,
+    "proposals_output_dir": PROJECT.fix_proposals_dir,
+    "proposal_tracking_file": PROJECT.proposal_tracking_file,
     "devstack_path": "/opt/stack",
-    "launchpad_project": "octavia",
+    "launchpad_project": PROJECT.launchpad,
     "max_proposals_per_run": 2,
     "cutoff_date": None,
     "gerrit": {
@@ -103,6 +104,7 @@ def load_config() -> dict:
     config = apply_cutoff_date(config, "cutoff_date", default_days=30)
     config = expand_config_paths(config, _PATH_KEYS)
     config = expand_context_config(config)
+    config["_project"] = PROJECT.to_dict()
     return config
 
 

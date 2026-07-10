@@ -1,5 +1,6 @@
 {
-  "comment": "Copy this file to config.json and customise for your environment",
+  "comment": "Copy this file to config.json and customize for your environment",
+  "comment_project": "Most project-specific values are loaded from project.json. Only override them here if you need agent-specific values different from the global project config.",
   "model": "claude-sonnet-4-6",
   "model_provider": "anthropic",
   "fix_proposals_dir": "~/octavia_fix_proposals",

@@ -1,22 +1,35 @@
 """
 Configuration loader for the CI Failure Analysis Agent.
+
+Uses global project configuration as fallback for project-specific settings.
 """
 import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).parent))
 
-from agents_lib import load_agent_config, expand_config_paths, expand_context_config
+from agents_lib import (
+    load_agent_config,
+    expand_config_paths,
+    expand_context_config,
+    PROJECT,
+)
 from agents_lib.utils import expand_path
 
 CONFIG_DIR = Path(__file__).parent
 
 
 def load_config():
-    """Load and return agent configuration."""
+    """Load and return agent configuration.
+
+    Uses global project configuration (PROJECT) as fallback for:
+    - repositories
+    - output.reports_directory
+    - monitoring.analyzed_failures_file
+    """
     defaults = {
         "model": "claude-sonnet-4-6",
-        "repositories": ["openstack/octavia"],
+        "repositories": PROJECT.repos,
         "zuul": {
             "base_url": "https://zuul.opendev.org",
             "tenant": "openstack",
@@ -32,11 +45,11 @@ def load_config():
             "token_env": None,
         },
         "output": {
-            "reports_directory": "~/octavia_ci_failures",
+            "reports_directory": PROJECT.ci_failures_dir,
         },
         "monitoring": {
             "max_changes_per_cycle": 5,
-            "analyzed_failures_file": "~/.octavia_ci_failures.json",
+            "analyzed_failures_file": PROJECT.ci_tracking_file,
         },
         "filters": {
             "skip_non_voting": False,
@@ -97,7 +110,10 @@ def load_config():
         "feedback_enabled": feedback_cfg.get("post_to_forge", False),
         "feedback_voting": feedback_cfg.get("enable_voting", False),
     }
-    return expand_context_config(_cfg)
+
+    _cfg = expand_context_config(_cfg)
+    _cfg["_project"] = PROJECT.to_dict()
+    return _cfg
 
 
 if __name__ == "__main__":

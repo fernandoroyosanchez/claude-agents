@@ -2,9 +2,13 @@
 
 import os
 from pathlib import Path
-from agents_lib import apply_cutoff_date
-from agents_lib import expand_config_paths, expand_context_config
-from agents_lib import load_agent_config
+from agents_lib import (
+    load_agent_config,
+    apply_cutoff_date,
+    expand_config_paths,
+    expand_context_config,
+    PROJECT,
+)
 
 
 def load_config() -> dict:
@@ -76,6 +80,9 @@ def load_config() -> dict:
     config["feedback_visibility_role"] = feedback.get("visibility_role", "Service Desk Team")
 
     config = expand_context_config(config)
+    # Add project metadata for reference
+    config["_project"] = PROJECT.to_dict()
+
     return config
 
 

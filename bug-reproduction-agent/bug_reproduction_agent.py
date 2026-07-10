@@ -25,6 +25,7 @@ from agents_lib import (
     checkout_main_branch,
     notify_report,
     load_notifications_config,
+    PROJECT,
 )
 from triage_parser import parse_triage_file, get_triage_timestamp
 from script_generator import (
@@ -62,8 +63,13 @@ def load_config():
         "CLAUDE_MODEL": "model",
     }
 
-    # Load config using shared library
-    defaults = {"model": "claude-sonnet-4-6"}
+    # Load config using shared library with PROJECT defaults
+    defaults = {
+        "model": "claude-sonnet-4-6",
+        "triage_reports_dir": PROJECT.triages_dir,
+        "reproductions_output_dir": PROJECT.reproductions_dir,
+        "reproduction_tracking_file": PROJECT.reproduction_tracking_file,
+    }
     CONFIG = load_agent_config(config_dir, env_overrides, defaults)
 
     # Apply cutoff date logic (default to 30 days ago)
@@ -80,6 +86,9 @@ def load_config():
     ]
     CONFIG = expand_config_paths(CONFIG, path_keys)
     CONFIG = expand_context_config(CONFIG)
+
+    # Add project metadata for reference
+    CONFIG["_project"] = PROJECT.to_dict()
 
     return CONFIG
 

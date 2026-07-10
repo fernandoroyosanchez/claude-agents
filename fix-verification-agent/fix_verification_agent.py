@@ -43,6 +43,7 @@ from agents_lib import (
     check_devstack_health,
     build_report,
     ReportSection,
+    PROJECT,
 )
 from failure_analyser import (
     analyse_failure,
@@ -80,13 +81,13 @@ _CONFIG_DIR = Path(__file__).parent
 _DEFAULTS = {
     "model": "claude-sonnet-4-6",
     "model_provider": "anthropic",
-    "fix_proposals_dir": "~/octavia_fix_proposals",
-    "reproduction_reports_dir": "~/octavia_bug_reproductions",
-    "reproduction_tracking_file": "~/.octavia_bug_reproductions.json",
-    "verifications_output_dir": "~/octavia_fix_verifications",
-    "verification_tracking_file": "~/.octavia_fix_verifications.json",
+    "fix_proposals_dir": PROJECT.fix_proposals_dir,
+    "reproduction_reports_dir": PROJECT.reproductions_dir,
+    "reproduction_tracking_file": PROJECT.reproduction_tracking_file,
+    "verifications_output_dir": PROJECT.fix_verifications_dir,
+    "verification_tracking_file": PROJECT.verification_tracking_file,
     "devstack_path": "/opt/stack",
-    "launchpad_project": "octavia",
+    "launchpad_project": PROJECT.launchpad,
     "max_proposals_per_run": 2,
     "cutoff_date": None,
     "verification": {
@@ -122,6 +123,7 @@ def load_config() -> dict:
     config = apply_cutoff_date(config, "cutoff_date", default_days=30)
     config = expand_config_paths(config, _PATH_KEYS)
     config = expand_context_config(config)
+    config["_project"] = PROJECT.to_dict()
     return config
 
 

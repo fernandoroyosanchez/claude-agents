@@ -310,6 +310,23 @@ async def triage_bug(bug_info: dict, sequence: int, previous_summary: str = None
             model=_result.model,
             duration_ms=_result.duration_ms,
         )
+    except Exception as exc:
+        # Workaround for Claude Agent SDK bug where it raises "Claude Code returned an error result: success"
+        # This happens when the agent completes successfully but the SDK fails to parse the final message
+        if "error result: success" in str(exc).lower():
+            print("\n⚠️  SDK returned spurious 'success' error")
+            print(f"   Checking if triage file was created: {triage_file}")
+            # If the file exists, the agent completed its work despite the error
+            if triage_file.exists():
+                print(f"   ✓ Triage file found ({triage_file.stat().st_size} bytes)")
+                print("   Treating as successful completion despite SDK error")
+                triage_result = triage_file.read_text()
+                usage_info = "(Usage info unavailable due to SDK error)"
+            else:
+                print("   ✗ Triage file not found - this was a real failure")
+                raise
+        else:
+            raise
 
         print(f"\n{'='*80}")
         print("✅ Triage Complete!")

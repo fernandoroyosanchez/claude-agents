@@ -1,17 +1,27 @@
 {
+  "comment": "Copy this file to config.json and customize for your environment",
+  "comment_project": "Most project-specific values (launchpad_project, triages_output_dir, repos) are loaded from project.json. Only override them here if you need agent-specific values different from the global project config.",
+
   "model": "claude-sonnet-4-6",
   "model_provider": "anthropic",
-  "launchpad_project": "octavia",
-  "triages_output_dir": "~/octavia_bug_triages",
+
+  "comment_defaults": "The following values are automatically set from project.json if not specified here:",
+  "comment_launchpad_project": "launchpad_project: Defaults to PROJECT.launchpad from project.json",
+  "comment_triages_output_dir": "triages_output_dir: Defaults to PROJECT.triages_dir (e.g., ~/ovn-octavia_bug_triages)",
+  "comment_search_repos": "search_repos: Defaults to PROJECT.repos",
+  "comment_triage_tracking_file": "triage_tracking_file: Defaults to PROJECT.triage_tracking_file",
+
   "devstack_path": "/opt/stack",
   "max_bugs_per_run": 5,
   "cutoff_date": null,
+
   "bug_statuses": [
     "New",
     "Confirmed",
     "Triaged",
     "In Progress"
   ],
+
   "bug_importance": [
     "Critical",
     "High",
@@ -19,26 +29,24 @@
     "Low",
     "Undecided"
   ],
-  "triage_tracking_file": "~/.octavia_bug_triages.json",
+
   "launchpad_api_url": "https://api.launchpad.net/1.0",
-  "search_repos": [
-    "openstack/octavia",
-    "openstack/octavia-lib",
-    "openstack/octavia-tempest-plugin",
-    "openstack/python-octaviaclient"
-  ],
+
   "gerrit_base_url": "https://review.opendev.org",
+
   "notifications": {
     "enabled": false,
     "comment": "Set enabled=true and copy notifications.sample.json to notifications.json in the repo root"
   },
+
   "feedback": {
     "post_to_launchpad": false,
     "consumer_key_env": "LAUNCHPAD_CONSUMER_KEY",
     "access_token_env": "LAUNCHPAD_ACCESS_TOKEN",
     "access_token_secret_env": "LAUNCHPAD_ACCESS_TOKEN_SECRET",
-    "comment": "post_to_launchpad: post the triage report as a comment on the Launchpad bug. Requires OAuth 1.0a credentials. Run once to obtain tokens: python3 -c \"from launchpadlib.launchpad import Launchpad; lp = Launchpad.login_with('octavia-triage-agent', 'production', version='devel'); print('LAUNCHPAD_ACCESS_TOKEN=' + lp.credentials.access_token.key); print('LAUNCHPAD_ACCESS_TOKEN_SECRET=' + lp.credentials.access_token.secret)\""
+    "comment": "post_to_launchpad: post the triage report as a comment on the Launchpad bug. Requires OAuth 1.0a credentials."
   },
+
   "context": {
     "rules_file": "~/.claude-agents/rules.md",
     "global_context_file": "~/.claude-agents/global_context.md",
@@ -46,11 +54,11 @@
     "extra_files": [],
     "max_chars_per_file": 2000,
     "save_learnings": true,
-    "comment": "Context files are read before each AI call. Learnings are appended after notable outcomes. rules_file is read-only (agents never write it)."
+    "comment": "Context files are read before each AI call. Learnings are appended after notable outcomes."
   },
+
   "affected_branches": [
     "master",
     "stable/*"
-  ],
-  "comment_branches": "Branch patterns to check for the introducing commit. Wildcards supported (e.g. stable/* matches all stable branches). Only these branches will be checked."
+  ]
 }

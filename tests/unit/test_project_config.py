@@ -184,18 +184,19 @@ def test_get_project_singleton():
     assert project1 is project2  # Same object
 
 
-@patch("pathlib.Path.is_file", return_value=False)
-def test_reload_project_config(mock_is_file):
+def test_reload_project_config(tmp_path, monkeypatch):
     """Test reload_project_config refreshes the singleton."""
-    # Initial load
-    project1 = get_project()
-    initial_name = project1.name
+    # Create a test config
+    config_file = tmp_path / "test_project.json"
+    config_file.write_text('{"project": {"name": "test-reload"}}')
 
-    # Reload (will get default again since no file exists)
-    project2 = reload_project_config()
+    # Set env to use our test config
+    monkeypatch.setenv("CLAUDE_AGENTS_PROJECT_CONFIG", str(config_file))
 
-    # Should be a new instance but with same values (default)
-    assert project2.name == initial_name
+    # Reload should pick up the new config
+    project = reload_project_config()
+
+    assert project.name == "test-reload"
 
 
 def test_project_config_empty_devstack_services():

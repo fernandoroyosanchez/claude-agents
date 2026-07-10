@@ -4,7 +4,9 @@ Configuration loader for DevStack test agent.
 Loads configuration from config.json with environment variable overrides.
 """
 from pathlib import Path
-from agents_lib import load_agent_config, expand_config_paths, expand_context_config
+from agents_lib import ()
+    PROJECT,
+    load_agent_config, expand_config_paths, expand_context_config
 
 
 def load_config():
@@ -52,6 +54,9 @@ def load_config():
     config["gerrit_base_url"] = config["forge_base_url"]
 
     config = expand_context_config(config)
+    # Add project metadata for reference
+    config["_project"] = PROJECT.to_dict()
+
     return config
 
 

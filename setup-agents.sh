@@ -104,6 +104,118 @@ echo ""
 
 STEP=1
 
+# Step: Project Configuration (install mode only)
+if ! $UPDATE_MODE; then
+    echo -e "${BLUE}Step ${STEP}: Project Configuration${NC}"
+    PROJECT_JSON="$SCRIPT_DIR/project.json"
+
+    if [ -f "$PROJECT_JSON" ]; then
+        # Detect existing project
+        PROJECT_NAME=$(python3 -c "import json; print(json.load(open('$PROJECT_JSON'))['project']['name'])" 2>/dev/null || echo "unknown")
+        echo -e "${GREEN}✓${NC} Found existing project.json: ${YELLOW}$PROJECT_NAME${NC}"
+    else
+        echo "No project.json found. Configure which OpenStack project to monitor."
+        echo ""
+        echo "Pre-configured options:"
+        echo "  1) Octavia (default) - openstack/octavia"
+        echo "  2) OVN-Octavia Provider - openstack/ovn-octavia-provider"
+        echo "  3) Neutron - openstack/neutron"
+        echo "  4) Nova - openstack/nova"
+        echo "  5) Custom project"
+        echo ""
+        echo -n "Select option [1]: "
+        read -r PROJECT_OPTION
+        PROJECT_OPTION=${PROJECT_OPTION:-1}
+
+        case $PROJECT_OPTION in
+            1)
+                echo "Using Octavia (default)"
+                cp "$SCRIPT_DIR/project.sample.json" "$PROJECT_JSON"
+                ;;
+            2)
+                echo "Using OVN-Octavia Provider"
+                cp "$SCRIPT_DIR/project.ovn-octavia.json" "$PROJECT_JSON"
+                ;;
+            3)
+                echo "Configuring for Neutron..."
+                cat > "$PROJECT_JSON" << 'EOF'
+{
+  "project": {
+    "name": "neutron",
+    "slug": "neutron",
+    "launchpad": "neutron",
+    "repos": [
+      "openstack/neutron",
+      "openstack/neutron-lib"
+    ],
+    "devstack_services": [
+      "devstack@q-svc.service",
+      "devstack@q-agt.service"
+    ]
+  }
+}
+EOF
+                ;;
+            4)
+                echo "Configuring for Nova..."
+                cat > "$PROJECT_JSON" << 'EOF'
+{
+  "project": {
+    "name": "nova",
+    "slug": "nova",
+    "launchpad": "nova",
+    "repos": [
+      "openstack/nova"
+    ],
+    "devstack_services": [
+      "devstack@n-api.service",
+      "devstack@n-cpu.service"
+    ]
+  }
+}
+EOF
+                ;;
+            5)
+                echo ""
+                echo -n "Project name: "
+                read -r CUSTOM_NAME
+                echo -n "Slug (for paths/commands) [$CUSTOM_NAME]: "
+                read -r CUSTOM_SLUG
+                CUSTOM_SLUG=${CUSTOM_SLUG:-$CUSTOM_NAME}
+                echo -n "Launchpad project [$CUSTOM_SLUG]: "
+                read -r CUSTOM_LP
+                CUSTOM_LP=${CUSTOM_LP:-$CUSTOM_SLUG}
+                echo -n "Git repos (comma-separated, e.g. openstack/nova,openstack/nova-lib): "
+                read -r CUSTOM_REPOS
+
+                # Convert comma-separated to JSON array
+                REPOS_JSON=$(echo "$CUSTOM_REPOS" | python3 -c "import sys,json; print(json.dumps(sys.stdin.read().strip().split(',')))")
+
+                cat > "$PROJECT_JSON" << EOF
+{
+  "project": {
+    "name": "$CUSTOM_NAME",
+    "slug": "$CUSTOM_SLUG",
+    "launchpad": "$CUSTOM_LP",
+    "repos": $REPOS_JSON,
+    "devstack_services": []
+  }
+}
+EOF
+                ;;
+            *)
+                echo -e "${RED}Invalid option${NC}, using Octavia default"
+                cp "$SCRIPT_DIR/project.sample.json" "$PROJECT_JSON"
+                ;;
+        esac
+
+        echo -e "${GREEN}✓${NC} Created project.json"
+    fi
+
+    STEP=$((STEP + 1))
+    echo ""
+fi
+
 # Step: git pull (update mode only)
 if $UPDATE_MODE; then
     echo -e "${BLUE}Step ${STEP}: Pulling latest changes from git${NC}"
@@ -139,6 +251,66 @@ echo -e "${GREEN}✓${NC} agents_lib installed"
 STEP=$((STEP + 1))
 echo ""
 
+# Step: Install agent packages (no CLI wrappers yet - those come after)
+echo -e "${BLUE}Step ${STEP}: Installing agent packages${NC}"
+for agent in "${SELECTED_AGENTS[@]}"; do
+    agent_dir=$(get_agent_dir "$agent")
+    if [ ! -d "$SCRIPT_DIR/$agent_dir" ]; then
+        echo -e "  ${YELLOW}⚠${NC} Skipping $agent (directory $agent_dir not found)"
+        continue
+    fi
+    if [ ! -f "$SCRIPT_DIR/$agent_dir/setup.py" ]; then
+        echo -e "  ${YELLOW}⚠${NC} Skipping $agent (no setup.py found in $agent_dir)"
+        continue
+    fi
+    echo -e "  ${BLUE}→${NC} Installing $agent package"
+    "$VENV_PATH/bin/pip" install -q -e "$SCRIPT_DIR/$agent_dir/"
+    echo -e "  ${GREEN}✓${NC} $agent installed"
+done
+STEP=$((STEP + 1))
+echo ""
+
+# Step: Generate project-specific CLI wrappers
+echo -e "${BLUE}Step ${STEP}: Generating CLI commands${NC}"
+PROJECT_SLUG=$("$VENV_PATH/bin/python3" -c "from agents_lib import PROJECT; print(PROJECT.slug)")
+echo "Project slug: ${YELLOW}$PROJECT_SLUG${NC}"
+echo "Generating commands with prefix: ${YELLOW}${PROJECT_SLUG}-*${NC}"
+echo ""
+
+"$VENV_PATH/bin/python3" << EOF
+import sys
+from pathlib import Path
+
+# Add agents_lib to path
+sys.path.insert(0, str(Path.cwd() / "agents_lib"))
+
+from agents_lib.project_config import PROJECT
+from agents_lib.cli_wrapper import get_agent_cli_configs, generate_cli_wrapper
+
+venv_bin = Path("$VENV_PATH/bin")
+cli_configs = get_agent_cli_configs()
+
+print(f"Installing CLI commands for project: {PROJECT.name}")
+print(f"Slug: {PROJECT.slug}")
+print()
+
+for agent_name, entry_function in cli_configs.items():
+    try:
+        script_path = generate_cli_wrapper(agent_name, entry_function, venv_bin)
+        print(f"  ✓ {script_path.name}")
+    except Exception as e:
+        print(f"  ✗ Failed to create {PROJECT.slug}-{agent_name}: {e}")
+
+print()
+print("Available commands:")
+for agent_name in cli_configs:
+    print(f"  {PROJECT.slug}-{agent_name}")
+EOF
+
+echo -e "${GREEN}✓${NC} CLI commands generated"
+STEP=$((STEP + 1))
+echo ""
+
 # Step: Systemd decision (install mode only, ask once before the main loop)
 if ! $UPDATE_MODE && [ -z "$INSTALL_SYSTEMD" ]; then
     echo -e "${BLUE}Step ${STEP}: Systemd services (optional)${NC}"
@@ -150,28 +322,18 @@ if ! $UPDATE_MODE && [ -z "$INSTALL_SYSTEMD" ]; then
     echo ""
 fi
 
-# Ensure INSTALL_SYSTEMD is always set before the agent loop (update mode
-# skips the step-3 prompt, so it may still be empty here — default to no).
+# Ensure INSTALL_SYSTEMD is always set (default to no).
 [ -z "$INSTALL_SYSTEMD" ] && INSTALL_SYSTEMD=no
 
-# Step: Install agents
-echo -e "${BLUE}Step ${STEP}: Installing agents${NC}"
-for agent in "${SELECTED_AGENTS[@]}"; do
-    agent_dir=$(get_agent_dir "$agent")
-    if [ ! -d "$SCRIPT_DIR/$agent_dir" ]; then
-        echo -e "  ${YELLOW}⚠${NC} Skipping $agent (directory $agent_dir not found)"
-        continue
-    fi
-    if [ ! -f "$SCRIPT_DIR/$agent_dir/install.sh" ]; then
-        echo -e "  ${YELLOW}⚠${NC} Skipping $agent (no install.sh found in $agent_dir)"
-        continue
-    fi
-    [ "$INSTALL_SYSTEMD" = "yes" ] && _sd_flag="--systemd" || _sd_flag="--no-systemd"
-    echo -e "  ${BLUE}→${NC} $agent"
-    bash "$SCRIPT_DIR/$agent_dir/install.sh" --venv "$VENV_PATH" "$_sd_flag" 2>&1 | sed -u 's/^/    /'
-done
-STEP=$((STEP + 1))
-echo ""
+# Step: Install systemd units (if requested)
+if [ "$INSTALL_SYSTEMD" = "yes" ]; then
+    echo -e "${BLUE}Step ${STEP}: Installing systemd units${NC}"
+    # TODO: Generate project-specific systemd units
+    echo -e "  ${YELLOW}⚠${NC} Systemd unit generation not yet implemented for project-agnostic setup"
+    echo -e "  ${YELLOW}⚠${NC} See MULTI_PROJECT.md for manual systemd configuration"
+    STEP=$((STEP + 1))
+    echo ""
+fi
 
 # Step: Notifications (install mode only)
 if ! $UPDATE_MODE; then

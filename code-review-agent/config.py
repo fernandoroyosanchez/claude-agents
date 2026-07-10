@@ -1,31 +1,44 @@
 #!/usr/bin/env python3
 """
-Configuration loader for Octavia Review Agent.
+Configuration loader for Code Review Agent.
 
 Loads configuration from:
 1. Environment variables (highest priority)
 2. config.json (if exists)
 3. config.sample.json (fallback)
-4. Defaults (lowest priority)
+4. Global project config (PROJECT)
+5. Defaults (lowest priority)
 """
 import os
 from pathlib import Path
-from agents_lib import load_agent_config, apply_cutoff_date, expand_config_paths, expand_context_config
+from agents_lib import (
+    load_agent_config,
+    apply_cutoff_date,
+    expand_config_paths,
+    expand_context_config,
+    PROJECT,
+)
 
 
 def load_config():
     """
     Load configuration from file and environment variables.
 
+    Uses global project configuration (PROJECT) as fallback for:
+    - repositories
+    - output.reviews_directory
+    - monitoring.reviewed_changes_file
+    - devstack.required_services
+
     Returns a dictionary with configuration settings.
     """
     config_dir = Path(__file__).parent.absolute()
 
-    # Default configuration
+    # Default configuration with PROJECT fallbacks
     defaults = {
-        "repositories": ["openstack/octavia"],
+        "repositories": PROJECT.repos,
         "devstack": {"path": "/opt/stack"},
-        "output": {"reviews_directory": "~/octavia_reviews"},
+        "output": {"reviews_directory": PROJECT.reviews_dir},
         "gerrit": {"base_url": "https://review.opendev.org"},
         "forge": {
             "type": "gerrit",
@@ -52,7 +65,7 @@ def load_config():
         },
         "monitoring": {
             "max_reviews_per_cycle": 3,
-            "reviewed_changes_file": "~/.octavia_reviewed_changes.json"
+            "reviewed_changes_file": PROJECT.review_tracking_file
         },
         "filters": {},
         "model": "claude-sonnet-4-6",
@@ -136,6 +149,10 @@ def load_config():
     }
 
     flat_config = expand_context_config(flat_config)
+
+    # Add project metadata for reference
+    flat_config["_project"] = PROJECT.to_dict()
+
     return flat_config
 
 

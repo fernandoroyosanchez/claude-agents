@@ -1,7 +1,16 @@
 {
   "comment": "Copy this file to config.json and customize for your environment",
+  "comment_project": "Most project-specific values (repositories, reviews_directory, reviewed_changes_file) are loaded from project.json. Only override them here if you need agent-specific values different from the global project config.",
+
   "model": "claude-sonnet-4-6",
   "model_provider": "anthropic",
+
+  "comment_defaults": "The following values are automatically set from project.json if not specified here:",
+  "comment_repositories": "repositories: Defaults to PROJECT.repos",
+  "comment_reviews_directory": "output.reviews_directory: Defaults to PROJECT.reviews_dir (e.g., ~/ovn-octavia_reviews)",
+  "comment_reviewed_changes_file": "monitoring.reviewed_changes_file: Defaults to PROJECT.review_tracking_file",
+  "comment_devstack_services": "devstack.required_services: Defaults to PROJECT.devstack_services",
+
   "forge": {
     "type": "gerrit",
     "base_url": "https://review.opendev.org",
@@ -10,32 +19,20 @@
     "username_env": null,
     "comment": "type: gerrit | github | gitlab. base_url: API base (e.g. https://api.github.com for GitHub). token_env: env var holding the API token. username_env: (Gerrit only) env var holding your Gerrit username \u2014 when set, token_env is used as the HTTP password and Basic auth is used instead of Bearer. repo_base_path: local directory where repos are cloned (default /opt/stack for DevStack)."
   },
-  "repositories": [
-    "openstack/octavia",
-    "openstack/octavia-lib",
-    "openstack/octavia-tempest-plugin",
-    "openstack/python-octaviaclient"
-  ],
   "devstack": {
     "path": "/opt/stack",
     "openrc_file": "~/git/devstack/openrc",
-    "required_services": [
-      "devstack@o-api.service",
-      "devstack@o-cw.service",
-      "devstack@o-hm.service"
-    ],
     "min_disk_space_gb": 10,
     "verify_main_branch": true,
     "test_in_devstack": true,
     "cleanup_on_failure": true,
-    "comment": "DevStack configuration. test_in_devstack enables deploying and testing changes in DevStack. cleanup_on_failure removes test resources even if tests fail."
+    "comment": "DevStack configuration. test_in_devstack enables deploying and testing changes in DevStack. cleanup_on_failure removes test resources even if tests fail. required_services defaults to PROJECT.devstack_services."
   },
   "output": {
-    "reviews_directory": "~/octavia_reviews",
-    "comment": "Where to save review documents. Can use ~ for home directory.",
     "review_format": "markdown",
     "include_test_output": true,
-    "include_code_snippets": true
+    "include_code_snippets": true,
+    "comment": "reviews_directory defaults to PROJECT.reviews_dir (e.g., ~/ovn-octavia_reviews)"
   },
   "gerrit": {
     "base_url": "https://review.opendev.org",
@@ -52,8 +49,7 @@
   "monitoring": {
     "check_interval_minutes": 60,
     "max_reviews_per_cycle": 3,
-    "reviewed_changes_file": "~/.octavia_reviewed_changes.json",
-    "comment": "Settings for automated monitoring mode"
+    "comment": "Settings for automated monitoring mode. reviewed_changes_file defaults to PROJECT.review_tracking_file"
   },
   "analysis": {
     "check_security": true,
@@ -110,6 +106,5 @@
     "stable/2024.1"
   ],
   "backport_rules_file": null,
-  "triages_output_dir": "~/octavia_bug_triages",
-  "comment_backport": "backport_branches: branches changes may be backported to. backport_rules_file: path to a Markdown file containing backport policy rules (null = no rules file). triages_output_dir: where to look for local triage reports when assessing backport need."
+  "comment_backport": "backport_branches: branches changes may be backported to. backport_rules_file: path to a Markdown file containing backport policy rules (null = no rules file). triages_output_dir defaults to PROJECT.triages_dir."
 }
