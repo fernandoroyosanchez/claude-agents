@@ -7,9 +7,9 @@ Backport-Candidate label set, then attempts a clean cherry-pick to each
 configured stable branch. Conflicts are skipped and logged.
 
 Usage:
-    octavia-backport-monitor
-    octavia-backport-monitor --dry-run     # log what would happen, no git operations
-    octavia-backport-monitor --repo openstack/octavia --lookback 14
+    openstack-backport-monitor
+    openstack-backport-monitor --dry-run     # log what would happen, no git operations
+    openstack-backport-monitor --repo openstack/octavia --lookback 14
 """
 import argparse
 import re

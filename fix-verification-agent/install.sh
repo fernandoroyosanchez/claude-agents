@@ -51,7 +51,7 @@ if ! "$VENV_PATH/bin/python" -c "import agents_lib" 2>/dev/null; then
 fi
 
 "$VENV_PATH/bin/pip" install -q -e "$SCRIPT_DIR/"
-echo -e "${GREEN}✓${NC} fix-verification-agent installed (octavia-verify-fix)"
+echo -e "${GREEN}✓${NC} fix-verification-agent installed (openstack-verify-fix)"
 
 if [ ! -f "$SCRIPT_DIR/config.json" ] && [ -f "$SCRIPT_DIR/config.sample.json" ]; then
     cp "$SCRIPT_DIR/config.sample.json" "$SCRIPT_DIR/config.json"

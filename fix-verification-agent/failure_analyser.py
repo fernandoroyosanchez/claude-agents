@@ -192,7 +192,7 @@ def format_verification_result(
             "Re-run when the DevStack environment is healthy.",
             "",
             "```bash",
-            "octavia-verify-fix --bug <bug_number>",
+            "openstack-verify-fix --bug <bug_number>",
             "```",
             "",
         ]

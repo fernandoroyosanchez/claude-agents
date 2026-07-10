@@ -47,10 +47,10 @@ detailed markdown report.
 **Commands**:
 ```bash
 # Monitor all configured bugs (runs the full triage loop)
-octavia-triage-bugs
+openstack-triage-bugs
 
 # Triage one specific bug by passing a JSON data file
-octavia-triage-bugs --single-bug /tmp/bug_data.json
+openstack-triage-bugs --single-bug /tmp/bug_data.json
 ```
 
 **Configuration** (`bug-triage-agent/config.json`):
@@ -79,16 +79,16 @@ comprehensive markdown review with a verdict (Approve / Request Changes).
 **Commands**:
 ```bash
 # Monitor all configured repositories
-octavia-review-agent
+openstack-review-agent
 
 # Review a specific change (latest patchset)
-octavia-review-change 982567
+openstack-review-change 982567
 
 # Review a specific patchset
-octavia-review-change 982567 3
+openstack-review-change 982567 3
 
 # Review by full Gerrit URL
-octavia-review-change https://review.opendev.org/c/openstack/octavia/+/982567
+openstack-review-change https://review.opendev.org/c/openstack/octavia/+/982567
 ```
 
 **Configuration** (`code-review-agent/config.json`):
@@ -117,22 +117,22 @@ and produces a report classifying each failure (`CODE_ISSUE`, `ENVIRONMENTAL`,
 **Commands**:
 ```bash
 # Monitor all configured repositories
-octavia-ci-agent
+openstack-ci-agent
 
 # Analyse failures for a specific Gerrit change
-octavia-ci-agent --change 982567
+openstack-ci-agent --change 982567
 
 # Analyse failures in a specific pipeline
-octavia-ci-agent --change 982567 --pipeline check
+openstack-ci-agent --change 982567 --pipeline check
 
 # Analyse a single Zuul build by UUID
-octavia-ci-agent --build <zuul-build-uuid>
+openstack-ci-agent --build <zuul-build-uuid>
 
 # List recent failures without running AI analysis
-octavia-ci-agent --list-failures
+openstack-ci-agent --list-failures
 
 # Print the formatted prompt only (for use with any AI tool)
-octavia-analyze-ci --failure-data /tmp/data.json --print-prompt
+openstack-analyze-ci --failure-data /tmp/data.json --print-prompt
 ```
 
 **Configuration** (`ci-failure-agent/config.json`):
@@ -163,7 +163,7 @@ and the successful script.
 **Command**:
 ```bash
 # Process the newest unprocessed triage (runs once and exits)
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 > **Note**: In automated setups a systemd path watcher triggers this automatically
@@ -199,7 +199,7 @@ section to the original review file.
 **Command**:
 ```bash
 # Process the newest untested review (runs once and exits)
-octavia-devstack-test
+openstack-devstack-test
 ```
 
 > **Note**: In automated setups a systemd path watcher triggers this automatically
@@ -231,7 +231,7 @@ Reads JIRA issues matching a configurable JQL query and produces:
 
 **Command**:
 ```bash
-octavia-jira-triage
+openstack-jira-triage
 ```
 
 **Key configuration** (`jira-triage-agent/config.json`):
@@ -264,7 +264,7 @@ developer review.
 
 **Command**:
 ```bash
-octavia-propose-fix
+openstack-propose-fix
 ```
 
 **Configuration** (`fix-proposal-agent/config.json`):
@@ -302,19 +302,19 @@ to validate their own fix against the reproduction test before submitting.
 **Commands**:
 ```bash
 # Automated mode (processes new fix proposals)
-octavia-verify-fix
+openstack-verify-fix
 
 # Manual mode — verify a local patch file
-octavia-verify-fix --bug 2150752 --patch ~/my-fix.patch
+openstack-verify-fix --bug 2150752 --patch ~/my-fix.patch
 
 # Manual mode — verify a local git branch
-octavia-verify-fix --bug 2150752 --branch fix/my-branch
+openstack-verify-fix --bug 2150752 --branch fix/my-branch
 
 # Manual mode — verify a Gerrit change
-octavia-verify-fix --bug 2150752 --gerrit 987701
+openstack-verify-fix --bug 2150752 --gerrit 987701
 
 # Manual mode — fix already applied, just re-run the reproduction test
-octavia-verify-fix --bug 2150752 --already-applied
+openstack-verify-fix --bug 2150752 --already-applied
 ```
 
 **Configuration** (`fix-verification-agent/config.json`):
@@ -376,19 +376,19 @@ tox                # run everything
 
 **Bug triage → reproduction** (can be fully automated):
 ```bash
-octavia-triage-bugs           # produces triage reports
-octavia-reproduce-bugs        # picks up the newest triage and tries to reproduce
+openstack-triage-bugs           # produces triage reports
+openstack-reproduce-bugs        # picks up the newest triage and tries to reproduce
 ```
 
 **Code review → integration test** (can be fully automated):
 ```bash
-octavia-review-change 982567  # produces a review file
-octavia-devstack-test         # picks up the newest review and runs live tests
+openstack-review-change 982567  # produces a review file
+openstack-devstack-test         # picks up the newest review and runs live tests
 ```
 
 **CI failure investigation**:
 ```bash
-octavia-ci-agent --change 982567
+openstack-ci-agent --change 982567
 # Read ~/octavia_ci_failures/*.md for analysis and recommendation
 ```
 
@@ -402,15 +402,15 @@ Each agent ships with systemd unit files for unattended operation:
 ./setup-agents.sh --systemd   # install unit files
 
 # Timer-based agents
-systemctl --user enable --now octavia-bug-triage.timer      # daily at 09:00
-systemctl --user enable --now octavia-code-review.timer     # every 4 hours
-systemctl --user enable --now octavia-ci-failure.timer      # every 4 hours
+systemctl --user enable --now openstack-bug-triage.timer      # daily at 09:00
+systemctl --user enable --now openstack-code-review.timer     # every 4 hours
+systemctl --user enable --now openstack-ci-failure.timer      # every 4 hours
 
 # Event-driven agents (inotify path watchers)
-systemctl --user enable --now octavia-bug-reproduction.path
-systemctl --user enable --now octavia-devstack-test.path
-systemctl --user enable --now octavia-fix-proposal.timer        # daily at 15:00
-systemctl --user enable --now octavia-fix-verification.timer    # daily at 17:00
+systemctl --user enable --now openstack-bug-reproduction.path
+systemctl --user enable --now openstack-devstack-test.path
+systemctl --user enable --now openstack-fix-proposal.timer        # daily at 15:00
+systemctl --user enable --now openstack-fix-verification.timer    # daily at 17:00
 
 # Persist services across logout
 loginctl enable-linger $USER

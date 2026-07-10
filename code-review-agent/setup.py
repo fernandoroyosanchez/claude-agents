@@ -1,5 +1,5 @@
 """
-Setup script for Octavia Code Review Agent
+Setup script for OpenStack Code Review Agent
 """
 from setuptools import setup, find_packages
 from pathlib import Path
@@ -9,9 +9,9 @@ readme_file = Path(__file__).parent / "README.md"
 long_description = readme_file.read_text() if readme_file.exists() else ""
 
 setup(
-    name="octavia-code-review-agent",
+    name="openstack-code-review-agent",
     version="1.0.0",
-    description="AI-powered code review agent for OpenStack Octavia",
+    description="AI-powered code review agent for OpenStack projects",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Richard Cruise",
@@ -40,8 +40,8 @@ setup(
     # Console scripts (command-line entry points)
     entry_points={
         "console_scripts": [
-            "octavia-review-agent=octavia_review_agent:cli_main",
-            "octavia-review-change=review_single_change:cli_main",
+            "openstack-review-agent=octavia_review_agent:cli_main",
+            "openstack-review-change=review_single_change:cli_main",
         ],
     },
 

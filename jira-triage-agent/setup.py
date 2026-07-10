@@ -32,7 +32,7 @@ setup(
 
     entry_points={
         "console_scripts": [
-            "octavia-jira-triage=jira_triage_agent:cli_main",
+            "openstack-jira-triage=jira_triage_agent:cli_main",
         ],
     },
 

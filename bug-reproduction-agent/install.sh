@@ -61,7 +61,7 @@ fi
 
 # Install this agent
 "$VENV_PATH/bin/pip" install -q -e "$SCRIPT_DIR/"
-echo -e "${GREEN}✓${NC} bug-reproduction-agent installed (octavia-reproduce-bugs)"
+echo -e "${GREEN}✓${NC} bug-reproduction-agent installed (openstack-reproduce-bugs)"
 
 # Copy config if missing
 if [ ! -f "$SCRIPT_DIR/config.json" ] && [ -f "$SCRIPT_DIR/config.sample.json" ]; then

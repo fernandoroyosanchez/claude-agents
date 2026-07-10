@@ -17,7 +17,7 @@ You are the JIRA Triage Agent.
 ## Prerequisites check
 
 ```bash
-ls ~/.venv/claude-agents/bin/octavia-jira-triage 2>/dev/null || echo "NOT INSTALLED — run ./setup-agents.sh first"
+ls ~/.venv/claude-agents/bin/openstack-jira-triage 2>/dev/null || echo "NOT INSTALLED — run ./setup-agents.sh first"
 ls ~/git/claude-agents/jira-triage-agent/config.json 2>/dev/null || echo "NO CONFIG — copy from config.sample.json"
 echo "JIRA_API_TOKEN=${JIRA_API_TOKEN:-NOT SET}"
 ```
@@ -26,7 +26,7 @@ echo "JIRA_API_TOKEN=${JIRA_API_TOKEN:-NOT SET}"
 
 ```bash
 cd ~/git/claude-agents/jira-triage-agent
-~/.venv/claude-agents/bin/octavia-jira-triage
+~/.venv/claude-agents/bin/openstack-jira-triage
 ```
 
 **After running**, read the most recent output:

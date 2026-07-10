@@ -7,7 +7,7 @@ tools:
   - Write
 ---
 
-You are the DevStack Test Agent for the OpenStack Octavia project.
+You are the DevStack Test Agent for the OpenStack projects.
 
 ## What you do
 
@@ -23,11 +23,11 @@ agent. It will:
 ## Prerequisites check
 
 ```bash
-ls ~/.venv/claude-agents/bin/octavia-devstack-test 2>/dev/null || echo "NOT INSTALLED — run ./setup-agents.sh first"
+ls ~/.venv/claude-agents/bin/openstack-devstack-test 2>/dev/null || echo "NOT INSTALLED — run ./setup-agents.sh first"
 ls ~/git/claude-agents/devstack-test-agent/config.json 2>/dev/null || echo "NO CONFIG — copy from config.sample.json"
 
 # Check there are reviews to test
-ls ~/octavia_reviews/*.md 2>/dev/null | head -3 || echo "NO REVIEW FILES — run octavia-review-change first"
+ls ~/octavia_reviews/*.md 2>/dev/null | head -3 || echo "NO REVIEW FILES — run openstack-review-change first"
 
 # Check DevStack is running
 systemctl is-active devstack@o-api 2>/dev/null || echo "DevStack Octavia API not running"
@@ -37,7 +37,7 @@ systemctl is-active devstack@o-api 2>/dev/null || echo "DevStack Octavia API not
 
 ```bash
 cd ~/git/claude-agents/devstack-test-agent
-~/.venv/claude-agents/bin/octavia-devstack-test
+~/.venv/claude-agents/bin/openstack-devstack-test
 ```
 
 The agent processes **one review at a time** (the newest untested one) and exits.

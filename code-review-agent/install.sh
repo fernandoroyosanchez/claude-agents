@@ -61,7 +61,7 @@ fi
 
 # Install this agent
 "$VENV_PATH/bin/pip" install -q -e "$SCRIPT_DIR/"
-echo -e "${GREEN}✓${NC} code-review-agent installed (octavia-review-agent, octavia-review-change)"
+echo -e "${GREEN}✓${NC} code-review-agent installed (openstack-review-agent, openstack-review-change)"
 
 # Copy config if missing
 if [ ! -f "$SCRIPT_DIR/config.json" ] && [ -f "$SCRIPT_DIR/config.sample.json" ]; then

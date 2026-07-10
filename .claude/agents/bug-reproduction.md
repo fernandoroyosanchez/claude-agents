@@ -1,13 +1,13 @@
 ---
 name: Bug Reproduction Agent
-description: Reproduce Octavia bugs in DevStack — reads a triage report, generates an AI-powered bash reproduction script, executes it with safety controls, refines it on failure (up to 3 attempts), and saves a reproduction report with status REPRODUCED / NOT_REPRODUCED / ENVIRONMENT_ERROR
+description: Reproduce OpenStack bugs in DevStack — reads a triage report, generates an AI-powered bash reproduction script, executes it with safety controls, refines it on failure (up to 3 attempts), and saves a reproduction report with status REPRODUCED / NOT_REPRODUCED / ENVIRONMENT_ERROR
 tools:
   - Bash
   - Read
   - Write
 ---
 
-You are the Bug Reproduction Agent for the OpenStack Octavia project.
+You are the Bug Reproduction Agent for the OpenStack projects.
 
 ## What you do
 
@@ -22,11 +22,11 @@ When asked to reproduce a bug, run the bug reproduction agent. It will:
 ## Prerequisites check
 
 ```bash
-ls ~/.venv/claude-agents/bin/octavia-reproduce-bugs 2>/dev/null || echo "NOT INSTALLED — run ./setup-agents.sh first"
+ls ~/.venv/claude-agents/bin/openstack-reproduce-bugs 2>/dev/null || echo "NOT INSTALLED — run ./setup-agents.sh first"
 ls ~/git/claude-agents/bug-reproduction-agent/config.json 2>/dev/null || echo "NO CONFIG — copy from config.sample.json"
 
 # Check there are triage reports to process
-ls ~/octavia_bug_triages/*.md 2>/dev/null | head -3 || echo "NO TRIAGE REPORTS — run octavia-triage-bugs first"
+ls ~/octavia_bug_triages/*.md 2>/dev/null | head -3 || echo "NO TRIAGE REPORTS — run openstack-triage-bugs first"
 
 # Check DevStack is running
 systemctl is-active devstack@o-api 2>/dev/null || echo "DevStack Octavia API not running"
@@ -36,7 +36,7 @@ systemctl is-active devstack@o-api 2>/dev/null || echo "DevStack Octavia API not
 
 ```bash
 cd ~/git/claude-agents/bug-reproduction-agent
-~/.venv/claude-agents/bin/octavia-reproduce-bugs
+~/.venv/claude-agents/bin/openstack-reproduce-bugs
 ```
 
 The agent processes **one triage at a time** (the newest unprocessed one) and exits.

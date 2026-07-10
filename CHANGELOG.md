@@ -469,7 +469,7 @@ Distinct messages for RESOLVED / NOT_RESOLVED / ENVIRONMENTAL_ERROR (the last
 makes clear that infrastructure issues are not a verdict on the fix).
 
 **New files:** `fix-verification-agent/` directory, 11 new unit tests,
-`systemd/octavia-fix-verification.{service,timer}` (daily at 17:00, 3h timeout)
+`systemd/openstack-fix-verification.{service,timer}` (daily at 17:00, 3h timeout)
 
 ---
 
@@ -562,7 +562,7 @@ proposal document.
 - `feedback.read_launchpad_comments / read_gerrit_comments` — read feedback online
 
 **New files:** `fix-proposal-agent/` directory, 16 new unit tests,
-`systemd/octavia-fix-proposal.{service,timer}` (daily at 15:00)
+`systemd/openstack-fix-proposal.{service,timer}` (daily at 15:00)
 
 ---
 
@@ -633,9 +633,9 @@ Code review agent service had `claude-opus-4-6`; all other agents use
 
 ---
 
-### Changed: Systemd services log to ~/octavia-logs/ files
+### Changed: Systemd services log to ~/openstack-logs/ files
 
-Changed from `StandardOutput=journal` to `StandardOutput=append:%h/octavia-logs/<agent>.log`
+Changed from `StandardOutput=journal` to `StandardOutput=append:%h/openstack-logs/<agent>.log`
 to work around a RHEL 10 journald issue where user service logs were inaccessible
 via `journalctl --user`.
 
@@ -910,18 +910,18 @@ repositories and uses AI to explain each failure and recommend action.
 
 **Manual mode (run immediately on a specific failure):**
 ```bash
-octavia-ci-agent --change 985404          # latest patchset for a Gerrit change
-octavia-ci-agent --change 985404 --pipeline check
-octavia-ci-agent --build <zuul-uuid>      # single Zuul build by UUID
+openstack-ci-agent --change 985404          # latest patchset for a Gerrit change
+openstack-ci-agent --change 985404 --pipeline check
+openstack-ci-agent --build <zuul-uuid>      # single Zuul build by UUID
 ```
 
 **Monitoring mode (automated / systemd timer):**
 ```bash
-octavia-ci-agent                          # all configured repos
-octavia-ci-agent --list-failures          # preview without analysis
+openstack-ci-agent                          # all configured repos
+openstack-ci-agent --list-failures          # preview without analysis
 ```
 
-**Commands:** `octavia-ci-agent`, `octavia-analyze-ci`  
+**Commands:** `openstack-ci-agent`, `openstack-analyze-ci`  
 **Output:** `~/octavia_ci_failures/`  
 **Tracking:** `~/.octavia_ci_failures.json`  
 **Systemd:** `octavia-ci-failure.timer` (every 4 hours)
@@ -1019,7 +1019,7 @@ The DevStack test agent:
 - Deploys the change to DevStack, runs integration tests
 - Appends a `DevStack Integration Tests` section to the review file
 
-**Command:** `octavia-devstack-test`  
+**Command:** `openstack-devstack-test`  
 **Tracking:** `~/.octavia_devstack_tests.json`  
 **Commits:** `12e9bd8`, `3e2dbb4`
 
@@ -1087,7 +1087,7 @@ DevStack environment.
 5. Executes script with timeout; on failure the AI refines and retries (up to 3 attempts)
 6. Generates a markdown report: `REPRODUCED` / `NOT_REPRODUCED` / `ENVIRONMENT_ERROR` / `SCRIPT_ERROR` / `TIMEOUT`
 
-**Command:** `octavia-reproduce-bugs`  
+**Command:** `openstack-reproduce-bugs`  
 **Output:** `~/octavia_bug_reproductions/`  
 **Tracking:** `~/.octavia_bug_reproductions.json`  
 **Systemd:** `octavia-bug-reproduction.path` (inotify-triggered)
@@ -1137,7 +1137,7 @@ and uses AI to triage each one.
 per bug (`--single-bug <json-file>`), giving each a clean asyncio loop and
 avoiding SDK cleanup errors from sequential `query()` calls.
 
-**Command:** `octavia-triage-bugs`  
+**Command:** `openstack-triage-bugs`  
 **Output:** `~/octavia_bug_triages/`  
 **Tracking:** `~/.octavia_bug_triages.json`
 
@@ -1183,6 +1183,6 @@ Initial AI-powered code review agent for OpenStack changes on OpenDev/Gerrit.
 - AI analyses the diff and produces a structured markdown review
 - Monitoring loop runs via systemd timer; single-change mode via CLI
 
-**Commands:** `octavia-review-agent` (monitoring), `octavia-review-change <change>` (manual)  
+**Commands:** `openstack-review-agent` (monitoring), `openstack-review-change <change>` (manual)  
 **Output:** `~/octavia_reviews/`  
 **Tracking:** `~/.octavia_reviewed_changes.json`

@@ -37,7 +37,7 @@ cd ~/git/claude-agents/jira-triage-agent
 ./install.sh --systemd     # also installs the systemd timer
 ```
 
-This provides the `octavia-jira-triage` command.
+This provides the `openstack-jira-triage` command.
 
 ## Configuration
 
@@ -90,7 +90,7 @@ assignee = currentUser() AND status != Done ORDER BY updated DESC
 source ~/.venv/claude-agents/bin/activate
 
 # Run the agent (processes up to max_issues_per_run issues)
-octavia-jira-triage
+openstack-jira-triage
 ```
 
 ## Automated scheduling with systemd
@@ -100,17 +100,17 @@ octavia-jira-triage
 ./setup-agents.sh --systemd jira-triage
 
 # Enable and start the timer (runs every 4 hours by default)
-systemctl --user enable --now octavia-jira-triage.timer
+systemctl --user enable --now openstack-jira-triage.timer
 
 # Check status
-systemctl --user status octavia-jira-triage.timer
-journalctl --user -u octavia-jira-triage.service -f
+systemctl --user status openstack-jira-triage.timer
+journalctl --user -u openstack-jira-triage.service -f
 
 # Persist across logout
 loginctl enable-linger $USER
 ```
 
-Edit `~/.config/systemd/user/octavia-jira-triage.timer` to change the schedule.
+Edit `~/.config/systemd/user/openstack-jira-triage.timer` to change the schedule.
 
 ## Output
 

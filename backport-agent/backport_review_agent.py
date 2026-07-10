@@ -13,8 +13,8 @@ with a backport-specific prompt that adds:
   - Backporting rules application
 
 Usage:
-    octavia-backport-review
-    octavia-backport-review --change 923456   # review a specific backport change
+    openstack-backport-review
+    openstack-backport-review --change 923456   # review a specific backport change
 """
 import argparse
 import asyncio

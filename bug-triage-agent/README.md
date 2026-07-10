@@ -46,7 +46,7 @@ cd ~/git/claude-agents/bug-triage-agent
 ./install.sh --no-systemd  # install package only
 ```
 
-This installs the `octavia-triage-bugs` command into `~/.venv/claude-agents`.
+This installs the `openstack-triage-bugs` command into `~/.venv/claude-agents`.
 
 ### Configure Vertex AI
 

@@ -33,7 +33,7 @@ New Triage Report (~/octavia_bug_triages/)
          ↓
 systemd Path Unit (inotify watch)
          ↓
-Triggers octavia-bug-reproduction.service
+Triggers openstack-bug-reproduction.service
          ↓
 Bug Reproduction Agent (Type=oneshot)
          ↓
@@ -74,7 +74,7 @@ cd ~/git/claude-agents/bug-reproduction-agent
 ./install.sh --no-systemd  # install package only
 ```
 
-This installs the `octavia-reproduce-bugs` command into `~/.venv/claude-agents`.
+This installs the `openstack-reproduce-bugs` command into `~/.venv/claude-agents`.
 
 ### Configure
 
@@ -98,7 +98,7 @@ vim bug-reproduction-agent/config.json
 
 ```bash
 # Enable path watcher (triggers on new triage reports)
-systemctl --user enable --now octavia-bug-reproduction.path
+systemctl --user enable --now openstack-bug-reproduction.path
 
 # Enable persistence after logout
 loginctl enable-linger $USER
@@ -112,13 +112,13 @@ The path unit watches `~/octavia_bug_triages/` for changes. When a new triage re
 
 **Check status:**
 ```bash
-systemctl --user status octavia-bug-reproduction.path
+systemctl --user status openstack-bug-reproduction.path
 systemctl --user list-timers  # Shows queued triggers
 ```
 
 **View logs:**
 ```bash
-journalctl --user -u octavia-bug-reproduction.service -f
+journalctl --user -u openstack-bug-reproduction.service -f
 ```
 
 ### Manual Execution
@@ -127,7 +127,7 @@ Run the agent manually for testing:
 
 ```bash
 source ~/.venv/claude-agents/bin/activate
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 The agent will:
@@ -165,7 +165,7 @@ The agent will:
     "max_attempts": 3,
     "script_timeout": 600,
     "cleanup_after_attempt": true,
-    "working_directory": "/tmp/octavia-reproductions"
+    "working_directory": "/tmp/openstack-reproductions"
   },
 
   "cutoff_date": null
@@ -187,12 +187,12 @@ Override configuration with environment variables:
 ```bash
 export MAX_ATTEMPTS=5
 export SCRIPT_TIMEOUT=900
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 ### systemd Service Environment
 
-Edit `~/.config/systemd/user/octavia-bug-reproduction.service`:
+Edit `~/.config/systemd/user/openstack-bug-reproduction.service`:
 
 ```ini
 [Service]
@@ -372,7 +372,7 @@ Service includes safety limits:
 
 **Check path unit:**
 ```bash
-systemctl --user status octavia-bug-reproduction.path
+systemctl --user status openstack-bug-reproduction.path
 ```
 
 Expected: `active (waiting)`
@@ -380,14 +380,14 @@ Expected: `active (waiting)`
 **Test trigger manually:**
 ```bash
 touch ~/octavia_bug_triages/test.md
-journalctl --user -u octavia-bug-reproduction.service -f
+journalctl --user -u openstack-bug-reproduction.service -f
 ```
 
 ### Service Failing
 
 **View logs:**
 ```bash
-journalctl --user -u octavia-bug-reproduction.service --no-pager
+journalctl --user -u openstack-bug-reproduction.service --no-pager
 ```
 
 **Common issues:**
@@ -425,7 +425,7 @@ bash ~/octavia_bug_reproductions/scripts/bug_XXXXXX_reproduction.sh
 **Increase timeout:**
 ```bash
 export SCRIPT_TIMEOUT=1200  # 20 minutes
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 ### Already Processed Bugs
@@ -463,10 +463,10 @@ Bug Reproduction Agent → Reproduction Report + Script
 **systemd timer example:**
 ```bash
 # Bug triage runs daily at 9 AM
-systemctl --user enable octavia-bug-triage.timer
+systemctl --user enable openstack-bug-triage.timer
 
 # Bug reproduction watches for new triages
-systemctl --user enable octavia-bug-reproduction.path
+systemctl --user enable openstack-bug-reproduction.path
 
 # Process: Triage at 9 AM → Reproduction triggered automatically
 ```
@@ -488,11 +488,11 @@ To run on multiple DevStack hosts, create separate service files:
 
 ```bash
 # Copy and customize
-cp ~/.config/systemd/user/octavia-bug-reproduction.service \
-   ~/.config/systemd/user/octavia-bug-reproduction-dev2.service
+cp ~/.config/systemd/user/openstack-bug-reproduction.service \
+   ~/.config/systemd/user/openstack-bug-reproduction-dev2.service
 
 # Edit to use different config
-vim ~/.config/systemd/user/octavia-bug-reproduction-dev2.service
+vim ~/.config/systemd/user/openstack-bug-reproduction-dev2.service
 # Change WorkingDirectory or add Environment="DEVSTACK_PATH=/opt/stack2"
 ```
 

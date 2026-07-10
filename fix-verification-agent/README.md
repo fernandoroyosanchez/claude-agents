@@ -42,7 +42,7 @@ pip install -e .
 ./install.sh
 ```
 
-Installed command: `octavia-verify-fix`
+Installed command: `openstack-verify-fix`
 
 ## Configuration
 
@@ -83,26 +83,26 @@ Watches `fix_proposals_dir` for new fix proposal `.md` files written by the
 Fix Proposal Agent and processes them:
 
 ```bash
-octavia-verify-fix
+openstack-verify-fix
 ```
 
 ### Manual modes
 
 ```bash
 # Verify using a local patch file
-octavia-verify-fix --bug 2148461 --patch /path/to/fix.patch
+openstack-verify-fix --bug 2148461 --patch /path/to/fix.patch
 
 # Verify using a local branch
-octavia-verify-fix --bug 2148461 --branch fix/my-branch
+openstack-verify-fix --bug 2148461 --branch fix/my-branch
 
 # Verify using a Gerrit change number
-octavia-verify-fix --bug 2148461 --gerrit 990312
+openstack-verify-fix --bug 2148461 --gerrit 990312
 
 # Verify when the fix is already applied to the local repo
-octavia-verify-fix --bug 2148461 --already-applied
+openstack-verify-fix --bug 2148461 --already-applied
 
 # Re-post an existing report to Launchpad without re-running
-octavia-verify-fix --bug 2148461 --post-only
+openstack-verify-fix --bug 2148461 --post-only
 ```
 
 ## Output

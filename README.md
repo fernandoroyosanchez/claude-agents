@@ -6,7 +6,7 @@ AI-powered automation agents for OpenStack development, powered by Claude via Go
 
 ### [Bug Triage Agent](bug-triage-agent/)
 
-Monitors Launchpad for new and updated Octavia bugs and generates intelligent triage reports.
+Monitors Launchpad for new and updated OpenStack bugs and generates intelligent triage reports.
 
 **Features:**
 - Fetches bugs in configurable statuses (New, Confirmed, Triaged, In Progress)
@@ -16,7 +16,7 @@ Monitors Launchpad for new and updated Octavia bugs and generates intelligent tr
 
 **Commands:**
 ```bash
-octavia-triage-bugs
+openstack-triage-bugs
 ```
 
 **Output:** `~/octavia_bug_triages/`  
@@ -41,9 +41,9 @@ Monitors OpenDev Gerrit for open changes and produces comprehensive AI-powered c
 
 **Commands:**
 ```bash
-octavia-review-agent                       # monitoring mode
-octavia-review-change <change_number>      # review a specific change
-octavia-review-change <change_number> 3    # review a specific patchset
+openstack-review-agent                       # monitoring mode
+openstack-review-change <change_number>      # review a specific change
+openstack-review-change <change_number> 3    # review a specific patchset
 ```
 
 **Output:** `~/octavia_reviews/`  
@@ -69,20 +69,20 @@ whether a code fix or a re-run (`recheck`) is needed.
 **Commands:**
 ```bash
 # Monitoring mode (all configured repos)
-octavia-ci-agent
+openstack-ci-agent
 
 # Manual: analyse latest failed pipeline for a specific Gerrit change
-octavia-ci-agent --change 985404
-octavia-ci-agent --change 985404 --pipeline check
+openstack-ci-agent --change 985404
+openstack-ci-agent --change 985404 --pipeline check
 
 # Manual: analyse a single Zuul build by UUID
-octavia-ci-agent --build <zuul-uuid>
+openstack-ci-agent --build <zuul-uuid>
 
 # Preview failures without running AI analysis
-octavia-ci-agent --list-failures
+openstack-ci-agent --list-failures
 
 # Print the formatted analysis prompt (for use with other AI tools)
-octavia-analyze-ci --failure-data /tmp/data.json --print-prompt
+openstack-analyze-ci --failure-data /tmp/data.json --print-prompt
 ```
 
 **Output:** `~/octavia_ci_failures/`  
@@ -103,7 +103,7 @@ Watches for new bug triage reports and attempts to reproduce bugs in a live DevS
 
 **Commands:**
 ```bash
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 **Output:** `~/octavia_bug_reproductions/`  
@@ -125,7 +125,7 @@ writing results to a separate `testing_report_*` file.
 
 **Commands:**
 ```bash
-octavia-devstack-test
+openstack-devstack-test
 ```
 
 **Output:** `~/octavia_reviews/testing_report_<repo>_<change>_ps<n>_<timestamp>.md`  
@@ -152,7 +152,7 @@ can accept, refine, or abandon.
 
 **Commands:**
 ```bash
-octavia-propose-fix
+openstack-propose-fix
 ```
 
 **Output:** `~/octavia_fix_proposals/`  
@@ -177,19 +177,19 @@ invocation by a developer testing their own fix.
 **Commands:**
 ```bash
 # Automated mode (processes new fix proposals)
-octavia-verify-fix
+openstack-verify-fix
 
 # Manual mode — verify a local patch file
-octavia-verify-fix --bug 2150752 --patch ~/my-fix.patch
+openstack-verify-fix --bug 2150752 --patch ~/my-fix.patch
 
 # Manual mode — verify a local git branch
-octavia-verify-fix --bug 2150752 --branch fix/my-branch
+openstack-verify-fix --bug 2150752 --branch fix/my-branch
 
 # Manual mode — verify a Gerrit change
-octavia-verify-fix --bug 2150752 --gerrit 987701
+openstack-verify-fix --bug 2150752 --gerrit 987701
 
 # Manual mode — fix already applied, just re-run reproduction test
-octavia-verify-fix --bug 2150752 --already-applied
+openstack-verify-fix --bug 2150752 --already-applied
 ```
 
 **Output:** `~/octavia_fix_verifications/`  
@@ -248,17 +248,17 @@ pip install -e fix-verification-agent/
 
 | Command | Description |
 |---------|-------------|
-| `octavia-triage-bugs` | Bug triage agent |
-| `octavia-review-agent` | Code review monitoring agent |
-| `octavia-review-change <change>` | Review a specific Gerrit change |
-| `octavia-ci-agent` | CI failure analysis agent |
-| `octavia-analyze-ci` | Analyze a single CI failure (see `--help`) |
-| `octavia-reproduce-bugs` | Bug reproduction agent |
-| `octavia-devstack-test` | DevStack integration test agent |
-| `octavia-jira-triage` | JIRA issue triage agent |
-| `octavia-propose-fix` | Fix proposal agent |
-| `octavia-verify-fix` | Fix verification agent |
-| `octavia-verify-fix --bug N --patch FILE` | Verify a local patch against bug N's reproduction test |
+| `openstack-triage-bugs` | Bug triage agent |
+| `openstack-review-agent` | Code review monitoring agent |
+| `openstack-review-change <change>` | Review a specific Gerrit change |
+| `openstack-ci-agent` | CI failure analysis agent |
+| `openstack-analyze-ci` | Analyze a single CI failure (see `--help`) |
+| `openstack-reproduce-bugs` | Bug reproduction agent |
+| `openstack-devstack-test` | DevStack integration test agent |
+| `openstack-jira-triage` | JIRA issue triage agent |
+| `openstack-propose-fix` | Fix proposal agent |
+| `openstack-verify-fix` | Fix verification agent |
+| `openstack-verify-fix --bug N --patch FILE` | Verify a local patch against bug N's reproduction test |
 
 ### Configuration
 
@@ -402,20 +402,20 @@ All agents run as systemd user services (no root required).
 ./setup-agents.sh --systemd
 
 # Bug triage — daily at 09:00
-systemctl --user enable octavia-bug-triage.timer
-systemctl --user start octavia-bug-triage.timer
+systemctl --user enable openstack-bug-triage.timer
+systemctl --user start openstack-bug-triage.timer
 
 # Code review — every 4 hours
-systemctl --user enable octavia-code-review.timer
-systemctl --user start octavia-code-review.timer
+systemctl --user enable openstack-code-review.timer
+systemctl --user start openstack-code-review.timer
 
 # CI failure analysis — every 4 hours
-systemctl --user enable octavia-ci-failure.timer
-systemctl --user start octavia-ci-failure.timer
+systemctl --user enable openstack-ci-failure.timer
+systemctl --user start openstack-ci-failure.timer
 
 # Bug reproduction — event-driven (inotify on ~/octavia_bug_triages/)
-systemctl --user enable octavia-bug-reproduction.path
-systemctl --user start octavia-bug-reproduction.path
+systemctl --user enable openstack-bug-reproduction.path
+systemctl --user start openstack-bug-reproduction.path
 
 # Persist services across logout
 loginctl enable-linger $USER
@@ -425,31 +425,31 @@ loginctl enable-linger $USER
 
 | Service | Schedule | Trigger |
 |---------|----------|---------|
-| `octavia-bug-triage.timer` | Daily at 09:00 | Time-based |
-| `octavia-code-review.timer` | Every 4 hours | Time-based |
-| `octavia-ci-failure.timer` | Every 4 hours | Time-based |
-| `octavia-bug-reproduction.path` | Immediately | New triage report (inotify) |
-| `octavia-fix-proposal.timer` | Daily at 15:00 | Time-based |
-| `octavia-fix-verification.timer` | Daily at 17:00 | Time-based |
+| `openstack-bug-triage.timer` | Daily at 09:00 | Time-based |
+| `openstack-code-review.timer` | Every 4 hours | Time-based |
+| `openstack-ci-failure.timer` | Every 4 hours | Time-based |
+| `openstack-bug-reproduction.path` | Immediately | New triage report (inotify) |
+| `openstack-fix-proposal.timer` | Daily at 15:00 | Time-based |
+| `openstack-fix-verification.timer` | Daily at 17:00 | Time-based |
 
 ### Useful Commands
 
 ```bash
 # Status overview
-systemctl --user list-timers octavia-*
+systemctl --user list-timers openstack-*
 systemctl --user list-units --type=path
 
 # Run a service manually (for testing)
-systemctl --user start octavia-bug-triage.service
-systemctl --user start octavia-code-review.service
-systemctl --user start octavia-ci-failure.service
-systemctl --user start octavia-bug-reproduction.service
+systemctl --user start openstack-bug-triage.service
+systemctl --user start openstack-code-review.service
+systemctl --user start openstack-ci-failure.service
+systemctl --user start openstack-bug-reproduction.service
 
 # View logs
-journalctl --user -u octavia-bug-triage.service -f
-journalctl --user -u octavia-code-review.service -n 50
-journalctl --user -u octavia-ci-failure.service -n 50
-journalctl --user -u octavia-bug-reproduction.service -f
+journalctl --user -u openstack-bug-triage.service -f
+journalctl --user -u openstack-code-review.service -n 50
+journalctl --user -u openstack-ci-failure.service -n 50
+journalctl --user -u openstack-bug-reproduction.service -f
 ```
 
 See the `systemd/` directory inside each agent folder for the unit files. Schedules and environment variables can be customised by editing the installed copies in `~/.config/systemd/user/`.

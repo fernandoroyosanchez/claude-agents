@@ -54,7 +54,7 @@ fi
 
 # Install this agent
 "$VENV_PATH/bin/pip" install -q -e "$SCRIPT_DIR/"
-echo -e "${GREEN}✓${NC} jira-triage-agent installed (octavia-jira-triage)"
+echo -e "${GREEN}✓${NC} jira-triage-agent installed (openstack-jira-triage)"
 
 # Copy config if missing
 if [ ! -f "$SCRIPT_DIR/config.json" ] && [ -f "$SCRIPT_DIR/config.sample.json" ]; then
@@ -80,5 +80,5 @@ if [ "$INSTALL_SYSTEMD" = "yes" ]; then
     done
     echo ""
     echo "To enable the JIRA triage agent:"
-    echo "  systemctl --user enable --now octavia-jira-triage.timer"
+    echo "  systemctl --user enable --now openstack-jira-triage.timer"
 fi

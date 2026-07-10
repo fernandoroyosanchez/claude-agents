@@ -60,7 +60,7 @@ cd ~/git/claude-agents/code-review-agent
 ./install.sh --no-systemd  # install package only
 ```
 
-This installs `octavia-review-agent` and `octavia-review-change` into `~/.venv/claude-agents`.
+This installs `openstack-review-agent` and `openstack-review-change` into `~/.venv/claude-agents`.
 
 ### 2. Configure Vertex AI
 
@@ -89,10 +89,10 @@ Edit `code-review-agent/config.json` to match your environment:
 
 ```bash
 # Review a specific change by number
-octavia-review-change 912345
+openstack-review-change 912345
 
 # Or by URL
-octavia-review-change https://review.opendev.org/c/openstack/octavia/+/912345
+openstack-review-change https://review.opendev.org/c/openstack/octavia/+/912345
 ```
 
 ### 5. Automate with systemd

@@ -38,7 +38,7 @@ Edit `config.json` — the three required fields:
 ## 4. Run
 
 ```bash
-octavia-jira-triage
+openstack-jira-triage
 ```
 
 Reports are saved to `~/jira_triages/` (bugs) and `~/jira_plans/` (stories/tasks).

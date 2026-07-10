@@ -41,7 +41,7 @@ posting, Gerrit push) are **off by default**.
 ## 3. Run
 
 ```bash
-octavia-propose-fix
+openstack-propose-fix
 ```
 
 The agent finds the newest unprocessed `REPRODUCED` bug and generates a proposal.
@@ -96,7 +96,7 @@ EOF
 Then run the agent again:
 
 ```bash
-octavia-propose-fix
+openstack-propose-fix
 ```
 
 The agent reads and deletes the feedback file and generates a revised proposal
@@ -118,7 +118,7 @@ tail -f ~/octavia-logs/octavia-fix-proposal.log
 
 | Problem | Solution |
 |---------|----------|
-| "No REPRODUCED reports found" | Run `octavia-reproduce-bugs` first |
+| "No REPRODUCED reports found" | Run `openstack-reproduce-bugs` first |
 | "repo not found at /opt/stack/octavia" | Set `devstack_path` in config.json |
 | Agent proposes same bug again | Check `~/.octavia_fix_proposals.json` — may need to clear the entry |
 | Patch doesn't apply cleanly | Fetch latest changes: `cd /opt/stack/octavia && git pull` |

@@ -61,7 +61,7 @@ fi
 
 # Install this agent
 "$VENV_PATH/bin/pip" install -q -e "$SCRIPT_DIR/"
-echo -e "${GREEN}✓${NC} bug-triage-agent installed (octavia-triage-bugs)"
+echo -e "${GREEN}✓${NC} bug-triage-agent installed (openstack-triage-bugs)"
 
 # Copy config if missing
 if [ ! -f "$SCRIPT_DIR/config.json" ] && [ -f "$SCRIPT_DIR/config.sample.json" ]; then

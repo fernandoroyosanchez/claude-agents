@@ -34,8 +34,8 @@ setup(
 
     entry_points={
         "console_scripts": [
-            "octavia-ci-agent=ci_failure_agent:cli_main",
-            "octavia-analyze-ci=analyze_ci_failure:cli_main",
+            "openstack-ci-agent=ci_failure_agent:cli_main",
+            "openstack-analyze-ci=analyze_ci_failure:cli_main",
         ],
     },
 

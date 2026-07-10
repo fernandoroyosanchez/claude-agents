@@ -47,7 +47,7 @@ cd ~/git/claude-agents/fix-proposal-agent
 pip install -e .
 ```
 
-This installs the `octavia-propose-fix` command into the active Python environment.
+This installs the `openstack-propose-fix` command into the active Python environment.
 
 ## Configuration
 
@@ -76,7 +76,7 @@ Key settings:
 ### Manual Execution
 
 ```bash
-octavia-propose-fix
+openstack-propose-fix
 ```
 
 ### Automated with systemd
@@ -148,7 +148,7 @@ To request a revised proposal:
    ```
 2. Run the agent (or wait for the next scheduled run):
    ```bash
-   octavia-propose-fix
+   openstack-propose-fix
    ```
 3. The agent reads and deletes the feedback file, then generates a revised
    proposal with sequence number incremented (e.g., `_2.md`, `_3.md`).

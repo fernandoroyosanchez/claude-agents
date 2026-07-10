@@ -14,9 +14,9 @@ cp project.ovn-octavia.json project.json
 ./setup-agents.sh
 
 # 3. Commands are now OVN-specific:
-ovn-octavia-triage-bugs
-ovn-octavia-review-agent
-ovn-octavia-ci-agent
+ovn-openstack-triage-bugs
+ovn-openstack-review-agent
+ovn-openstack-ci-agent
 ```
 
 **Output locations:**
@@ -156,7 +156,7 @@ All paths support `~` expansion.
 ### Before (hardcoded Octavia):
 
 ```bash
-octavia-triage-bugs
+openstack-triage-bugs
 # Always uses Launchpad octavia project
 # Always outputs to ~/octavia_bug_triages/
 ```
@@ -167,7 +167,7 @@ octavia-triage-bugs
 
 ```bash
 # No project.json → defaults to Octavia
-octavia-triage-bugs  # Still works!
+openstack-triage-bugs  # Still works!
 ```
 
 **Option 2: Switch to OVN**
@@ -176,7 +176,7 @@ octavia-triage-bugs  # Still works!
 cp project.ovn-octavia.json project.json
 ./setup-agents.sh
 
-ovn-octavia-triage-bugs
+ovn-openstack-triage-bugs
 # Uses Launchpad neutron project
 # Outputs to ~/ovn-octavia_bug_triages/
 ```
@@ -191,8 +191,8 @@ Commands follow the pattern: `{slug}-<agent>-<action>`
 
 | Project | Slug | Triage Command | Review Command |
 |---------|------|----------------|----------------|
-| octavia | `octavia` | `octavia-triage-bugs` | `octavia-review-agent` |
-| ovn-octavia-provider | `ovn-octavia` | `ovn-octavia-triage-bugs` | `ovn-octavia-review-agent` |
+| octavia | `octavia` | `openstack-triage-bugs` | `openstack-review-agent` |
+| ovn-octavia-provider | `ovn-octavia` | `ovn-openstack-triage-bugs` | `ovn-openstack-review-agent` |
 | neutron | `neutron` | `neutron-triage-bugs` | `neutron-review-agent` |
 | nova | `nova` | `nova-triage-bugs` | `nova-review-agent` |
 
@@ -206,10 +206,10 @@ Units follow the pattern: `{slug}-<agent>.service` / `{slug}-<agent>.timer`
 
 ```bash
 # Octavia
-systemctl --user enable octavia-bug-triage.timer
+systemctl --user enable openstack-bug-triage.timer
 
 # OVN-Octavia
-systemctl --user enable ovn-octavia-bug-triage.timer
+systemctl --user enable ovn-openstack-bug-triage.timer
 
 # Neutron
 systemctl --user enable neutron-bug-triage.timer
@@ -258,9 +258,9 @@ python3 config.py
 # No per-agent configs needed - uses project.json
 ./setup-agents.sh
 
-ovn-octavia-triage-bugs
-ovn-octavia-review-agent
-ovn-octavia-ci-agent
+ovn-openstack-triage-bugs
+ovn-openstack-review-agent
+ovn-openstack-ci-agent
 ```
 
 ### Example 2: Mixed (Global OVN + Per-Agent Override)
@@ -297,7 +297,7 @@ ovn-octavia-ci-agent
 ./setup-agents.sh
 
 # Verify commands were installed
-which ovn-octavia-triage-bugs
+which ovn-openstack-triage-bugs
 ```
 
 ### Problem: Still using Octavia defaults
@@ -334,8 +334,8 @@ If you want to monitor **both** Octavia and OVN from the same machine:
   # Run: ./setup-agents.sh
 
 # Result:
-# - octavia-triage-bugs (from first repo)
-# - ovn-octavia-triage-bugs (from second repo)
+# - openstack-triage-bugs (from first repo)
+# - ovn-openstack-triage-bugs (from second repo)
 # - Both can run simultaneously with different systemd units
 ```
 
@@ -371,7 +371,7 @@ All existing Octavia-specific installations continue to work without changes:
 
 - ✅ No `project.json` → defaults to Octavia
 - ✅ Existing `config.json` files take precedence
-- ✅ CLI commands remain `octavia-*`
-- ✅ Systemd units remain `octavia-*.service`
+- ✅ CLI commands updated to `openstack-*`
+- ✅ Systemd units updated to `openstack-*.service`
 
 **Migration is opt-in:** create `project.json` only when ready.

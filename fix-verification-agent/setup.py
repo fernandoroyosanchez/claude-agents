@@ -1,4 +1,4 @@
-"""Setup script for Octavia Fix Verification Agent."""
+"""Setup script for OpenStack Fix Verification Agent."""
 from setuptools import setup, find_packages
 from pathlib import Path
 
@@ -6,7 +6,7 @@ readme_file = Path(__file__).parent / "README.md"
 long_description = readme_file.read_text() if readme_file.exists() else ""
 
 setup(
-    name="octavia-fix-verification-agent",
+    name="openstack-fix-verification-agent",
     version="1.0.0",
     description="AI-powered fix verification agent for OpenStack Octavia bugs",
     long_description=long_description,
@@ -33,7 +33,7 @@ setup(
 
     entry_points={
         "console_scripts": [
-            "octavia-verify-fix=fix_verification_agent:cli_main",
+            "openstack-verify-fix=fix_verification_agent:cli_main",
         ],
     },
 

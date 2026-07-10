@@ -1,5 +1,5 @@
 """
-Setup script for Octavia Bug Reproduction Agent
+Setup script for OpenStack Bug Reproduction Agent
 """
 from setuptools import setup, find_packages
 from pathlib import Path
@@ -11,9 +11,9 @@ if readme_file.exists():
     long_description = readme_file.read_text()
 
 setup(
-    name="octavia-bug-reproduction-agent",
+    name="openstack-bug-reproduction-agent",
     version="1.0.0",
-    description="AI-powered bug reproduction agent for OpenStack Octavia",
+    description="AI-powered agent for OpenStack projects",
     long_description=long_description,
     long_description_content_type="text/markdown",
     author="Richard Cruise",
@@ -42,7 +42,7 @@ setup(
     # Console scripts (command-line entry points)
     entry_points={
         "console_scripts": [
-            "octavia-reproduce-bugs=bug_reproduction_agent:cli_main",
+            "openstack-reproduce-bugs=bug_reproduction_agent:cli_main",
         ],
     },
 

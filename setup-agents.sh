@@ -491,9 +491,9 @@ fi
 if $UPDATE_MODE; then
     echo -e "${BLUE}Step ${STEP}: Checking running services${NC}"
     RUNNING_SERVICES=()
-    for svc in octavia-bug-triage.timer octavia-code-review.timer \
-               octavia-ci-failure.timer octavia-bug-reproduction.path \
-               octavia-devstack-test.path; do
+    for svc in openstack-bug-triage.timer openstack-code-review.timer \
+               openstack-ci-failure.timer openstack-bug-reproduction.path \
+               openstack-devstack-test.path; do
         if systemctl --user is-active --quiet "$svc" 2>/dev/null; then
             RUNNING_SERVICES+=("$svc")
         fi
@@ -567,21 +567,21 @@ if ! $UPDATE_MODE; then
         for agent in "${SELECTED_AGENTS[@]}"; do
             case $agent in
                 bug-triage)
-                    echo "     systemctl --user enable --now octavia-bug-triage.timer" ;;
+                    echo "     systemctl --user enable --now openstack-bug-triage.timer" ;;
                 code-review)
-                    echo "     systemctl --user enable --now octavia-code-review.timer" ;;
+                    echo "     systemctl --user enable --now openstack-code-review.timer" ;;
                 ci-failure)
-                    echo "     systemctl --user enable --now octavia-ci-failure.timer" ;;
+                    echo "     systemctl --user enable --now openstack-ci-failure.timer" ;;
                 bug-reproduction)
-                    echo "     systemctl --user enable --now octavia-bug-reproduction.path" ;;
+                    echo "     systemctl --user enable --now openstack-bug-reproduction.path" ;;
                 devstack-test)
-                    echo "     systemctl --user enable --now octavia-devstack-test.path" ;;
+                    echo "     systemctl --user enable --now openstack-devstack-test.path" ;;
                 jira-triage)
-                    echo "     systemctl --user enable --now octavia-jira-triage.timer" ;;
+                    echo "     systemctl --user enable --now openstack-jira-triage.timer" ;;
                 fix-proposal)
-                    echo "     systemctl --user enable --now octavia-fix-proposal.timer" ;;
+                    echo "     systemctl --user enable --now openstack-fix-proposal.timer" ;;
                 fix-verification)
-                    echo "     systemctl --user enable --now octavia-fix-verification.timer" ;;
+                    echo "     systemctl --user enable --now openstack-fix-verification.timer" ;;
             esac
         done
         echo ""
@@ -591,14 +591,14 @@ if ! $UPDATE_MODE; then
         echo "${NEXT}. Run agents manually:"
         for agent in "${SELECTED_AGENTS[@]}"; do
             case $agent in
-                bug-triage)       echo "     $VENV_PATH/bin/octavia-triage-bugs" ;;
-                code-review)      echo "     $VENV_PATH/bin/octavia-review-agent" ;;
-                ci-failure)       echo "     $VENV_PATH/bin/octavia-ci-agent" ;;
-                bug-reproduction) echo "     $VENV_PATH/bin/octavia-reproduce-bugs" ;;
-                devstack-test)    echo "     $VENV_PATH/bin/octavia-devstack-test" ;;
-                jira-triage)      echo "     $VENV_PATH/bin/octavia-jira-triage" ;;
-                fix-proposal)     echo "     $VENV_PATH/bin/octavia-propose-fix" ;;
-                fix-verification) echo "     $VENV_PATH/bin/octavia-verify-fix" ;;
+                bug-triage)       echo "     $VENV_PATH/bin/openstack-triage-bugs" ;;
+                code-review)      echo "     $VENV_PATH/bin/openstack-review-agent" ;;
+                ci-failure)       echo "     $VENV_PATH/bin/openstack-ci-agent" ;;
+                bug-reproduction) echo "     $VENV_PATH/bin/openstack-reproduce-bugs" ;;
+                devstack-test)    echo "     $VENV_PATH/bin/openstack-devstack-test" ;;
+                jira-triage)      echo "     $VENV_PATH/bin/openstack-jira-triage" ;;
+                fix-proposal)     echo "     $VENV_PATH/bin/openstack-propose-fix" ;;
+                fix-verification) echo "     $VENV_PATH/bin/openstack-verify-fix" ;;
             esac
         done
         echo ""

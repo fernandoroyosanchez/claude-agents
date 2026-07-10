@@ -61,7 +61,7 @@ fi
 
 # Install this agent
 "$VENV_PATH/bin/pip" install -q -e "$SCRIPT_DIR/"
-echo -e "${GREEN}✓${NC} devstack-test-agent installed (octavia-devstack-test)"
+echo -e "${GREEN}✓${NC} devstack-test-agent installed (openstack-devstack-test)"
 
 # Copy config if missing
 if [ ! -f "$SCRIPT_DIR/config.json" ] && [ -f "$SCRIPT_DIR/config.sample.json" ]; then
@@ -90,8 +90,8 @@ if [ "$INSTALL_SYSTEMD" = "yes" ]; then
     echo ""
     echo "To enable the DevStack test agent:"
     echo "  # Event-driven (runs immediately when a new review file appears):"
-    echo "  systemctl --user enable --now octavia-devstack-test.path"
+    echo "  systemctl --user enable --now openstack-devstack-test.path"
     echo ""
     echo "  # Scheduled fallback (every hour at :30, catches any missed reviews):"
-    echo "  systemctl --user enable --now octavia-devstack-test.timer"
+    echo "  systemctl --user enable --now openstack-devstack-test.timer"
 fi

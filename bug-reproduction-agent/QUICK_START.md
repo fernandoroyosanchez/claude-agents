@@ -68,7 +68,7 @@ openstack loadbalancer list
 ls ~/octavia_bug_triages/
 
 # Run agent
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 **Expected output:**
@@ -208,7 +208,7 @@ systemctl --user status octavia-bug-reproduction.path
 
 ```bash
 # Manual run
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 
 # Check path watcher
 systemctl --user status octavia-bug-reproduction.path
@@ -252,7 +252,7 @@ export MAX_ATTEMPTS=3
 export SCRIPT_TIMEOUT=600
 
 # Run with overrides
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 ## Common Tasks
@@ -265,7 +265,7 @@ vim ~/.octavia_bug_reproductions.json
 # Delete the bug entry
 
 # Run agent again
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 ### Increase Script Timeout
@@ -277,7 +277,7 @@ vim ~/git/claude-agents/bug-reproduction-agent/config.json
 
 # Or use environment variable
 export SCRIPT_TIMEOUT=1200
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 ### View Specific Reproduction

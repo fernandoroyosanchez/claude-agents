@@ -861,19 +861,19 @@ async def main() -> None:
         epilog="""
 Examples:
   # Automated mode (processes new fix proposals)
-  octavia-verify-fix
+  openstack-verify-fix
 
   # Manual mode — verify a local patch file
-  octavia-verify-fix --bug 2150752 --patch ~/my-fix.patch
+  openstack-verify-fix --bug 2150752 --patch ~/my-fix.patch
 
   # Manual mode — verify a local git branch
-  octavia-verify-fix --bug 2150752 --branch fix/my-fix
+  openstack-verify-fix --bug 2150752 --branch fix/my-fix
 
   # Manual mode — verify a Gerrit change
-  octavia-verify-fix --bug 2150752 --gerrit 987701
+  openstack-verify-fix --bug 2150752 --gerrit 987701
 
   # Manual mode — fix already applied, just re-run reproduction test
-  octavia-verify-fix --bug 2150752 --already-applied
+  openstack-verify-fix --bug 2150752 --already-applied
 """,
     )
     parser.add_argument("--bug", type=int, metavar="N",

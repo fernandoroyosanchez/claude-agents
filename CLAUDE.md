@@ -47,16 +47,16 @@ source venv/bin/activate
 pip install -e agents_lib/
 
 # Install agents individually
-pip install -e bug-triage-agent/          # Provides: octavia-triage-bugs
-pip install -e code-review-agent/         # Provides: octavia-review-agent, octavia-review-change
-pip install -e bug-reproduction-agent/    # Provides: octavia-reproduce-bugs
+pip install -e bug-triage-agent/          # Provides: openstack-triage-bugs
+pip install -e code-review-agent/         # Provides: openstack-review-agent, openstack-review-change
+pip install -e bug-reproduction-agent/    # Provides: openstack-reproduce-bugs
 ```
 
 **Installed Commands:**
-- `octavia-triage-bugs [--single-bug FILE]` - Bug triage agent
-- `octavia-review-agent` - Code review monitoring agent
-- `octavia-review-change <change_number> [patchset]` - Review specific change
-- `octavia-reproduce-bugs` - Bug reproduction agent
+- `openstack-triage-bugs [--single-bug FILE]` - Bug triage agent
+- `openstack-review-agent` - Code review monitoring agent
+- `openstack-review-change <change_number> [patchset]` - Review specific change
+- `openstack-reproduce-bugs` - Bug reproduction agent
 
 **Dependencies:**
 Each agent package automatically installs:
@@ -328,7 +328,7 @@ Example: review_openstack_octavia_982567_ps1_20260330_103423.md
     "max_attempts": 3,
     "script_timeout": 600,
     "cleanup_after_attempt": true,
-    "working_directory": "/tmp/octavia-reproductions"
+    "working_directory": "/tmp/openstack-reproductions"
   },
   "cutoff_date": null
 }
@@ -381,19 +381,19 @@ Example: reproduction_2146764_test_backup_member_randomly_fails_20260330_143022_
 ```
 
 **systemd Integration:**
-- **Path unit** (`octavia-bug-reproduction.path`) - Watches `~/octavia_bug_triages/` via inotify
-- **Service unit** (`octavia-bug-reproduction.service`) - Type=oneshot (runs once per trigger)
+- **Path unit** (`openstack-bug-reproduction.path`) - Watches `~/octavia_bug_triages/` via inotify
+- **Service unit** (`openstack-bug-reproduction.service`) - Type=oneshot (runs once per trigger)
 - **Resource limits**: MemoryMax=4G, CPUQuota=100%, TimeoutSec=1800
 - **Environment**: `CLAUDE_CODE_USE_VERTEX=1`
 
 **Running:**
 ```bash
 # Automatic (event-driven)
-systemctl --user enable octavia-bug-reproduction.path
-systemctl --user start octavia-bug-reproduction.path
+systemctl --user enable openstack-bug-reproduction.path
+systemctl --user start openstack-bug-reproduction.path
 
 # Manual
-octavia-reproduce-bugs
+openstack-reproduce-bugs
 ```
 
 ---
@@ -407,12 +407,12 @@ All agents can be automated using systemd user services, timers, and path units,
 **Setup Script:** `systemd/setup-systemd.sh`
 
 **Installed Files:**
-- `octavia-bug-triage.service` - Bug triage service
-- `octavia-bug-triage.timer` - Bug triage timer (daily at 9:00 AM)
-- `octavia-code-review.service` - Code review service
-- `octavia-code-review.timer` - Code review timer (every 4 hours)
-- `octavia-bug-reproduction.service` - Bug reproduction service
-- `octavia-bug-reproduction.path` - Bug reproduction path watcher (event-driven)
+- `openstack-bug-triage.service` - Bug triage service
+- `openstack-bug-triage.timer` - Bug triage timer (daily at 9:00 AM)
+- `openstack-code-review.service` - Code review service
+- `openstack-code-review.timer` - Code review timer (every 4 hours)
+- `openstack-bug-reproduction.service` - Bug reproduction service
+- `openstack-bug-reproduction.path` - Bug reproduction path watcher (event-driven)
 
 ### Quick Setup
 
@@ -421,15 +421,15 @@ cd systemd
 ./setup-systemd.sh
 
 # Enable and start timers
-systemctl --user enable octavia-bug-triage.timer
-systemctl --user start octavia-bug-triage.timer
+systemctl --user enable openstack-bug-triage.timer
+systemctl --user start openstack-bug-triage.timer
 
-systemctl --user enable octavia-code-review.timer
-systemctl --user start octavia-code-review.timer
+systemctl --user enable openstack-code-review.timer
+systemctl --user start openstack-code-review.timer
 
 # Enable and start path watcher (event-driven)
-systemctl --user enable octavia-bug-reproduction.path
-systemctl --user start octavia-bug-reproduction.path
+systemctl --user enable openstack-bug-reproduction.path
+systemctl --user start openstack-bug-reproduction.path
 
 # Enable persistence after logout
 loginctl enable-linger $USER
@@ -441,10 +441,10 @@ Services run from: `~/.venv/claude-agents/`
 
 The setup script creates this venv and installs all packages:
 ```bash
-~/.venv/claude-agents/bin/octavia-triage-bugs
-~/.venv/claude-agents/bin/octavia-review-agent
-~/.venv/claude-agents/bin/octavia-review-change
-~/.venv/claude-agents/bin/octavia-reproduce-bugs
+~/.venv/claude-agents/bin/openstack-triage-bugs
+~/.venv/claude-agents/bin/openstack-review-agent
+~/.venv/claude-agents/bin/openstack-review-change
+~/.venv/claude-agents/bin/openstack-reproduce-bugs
 ```
 
 ### Service Configuration
@@ -463,7 +463,7 @@ Services are installed to: `~/.config/systemd/user/`
 [Service]
 Type=oneshot
 WorkingDirectory=~/git/claude-agents/bug-triage-agent
-ExecStart=~/.venv/claude-agents/bin/octavia-triage-bugs
+ExecStart=~/.venv/claude-agents/bin/openstack-triage-bugs
 Environment="CLAUDE_CODE_USE_VERTEX=1"
 StandardOutput=journal
 ```
@@ -497,7 +497,7 @@ Persistent=true
 ```ini
 [Path]
 PathChanged=%h/octavia_bug_triages
-Unit=octavia-bug-reproduction.service
+Unit=openstack-bug-reproduction.service
 ```
 
 **How it works:**
@@ -512,29 +512,29 @@ Unit=octavia-bug-reproduction.service
 # Check status
 systemctl --user list-timers
 systemctl --user list-units --type=path
-systemctl --user status octavia-bug-triage.timer
-systemctl --user status octavia-bug-reproduction.path
+systemctl --user status openstack-bug-triage.timer
+systemctl --user status openstack-bug-reproduction.path
 
 # Run manually
-systemctl --user start octavia-bug-triage.service
-systemctl --user start octavia-code-review.service
-systemctl --user start octavia-bug-reproduction.service
+systemctl --user start openstack-bug-triage.service
+systemctl --user start openstack-code-review.service
+systemctl --user start openstack-bug-reproduction.service
 
 # View logs
-journalctl --user -u octavia-bug-triage.service -f
-journalctl --user -u octavia-code-review.service -n 50
-journalctl --user -u octavia-bug-reproduction.service -f
+journalctl --user -u openstack-bug-triage.service -f
+journalctl --user -u openstack-code-review.service -n 50
+journalctl --user -u openstack-bug-reproduction.service -f
 
 # Stop/disable
-systemctl --user stop octavia-bug-triage.timer
-systemctl --user disable octavia-bug-triage.timer
-systemctl --user stop octavia-bug-reproduction.path
-systemctl --user disable octavia-bug-reproduction.path
+systemctl --user stop openstack-bug-triage.timer
+systemctl --user disable openstack-bug-triage.timer
+systemctl --user stop openstack-bug-reproduction.path
+systemctl --user disable openstack-bug-reproduction.path
 
 # Reload after editing
 systemctl --user daemon-reload
-systemctl --user restart octavia-bug-triage.timer
-systemctl --user restart octavia-bug-reproduction.path
+systemctl --user restart openstack-bug-triage.timer
+systemctl --user restart openstack-bug-reproduction.path
 ```
 
 ### Environment Variables
@@ -553,18 +553,18 @@ Environment="GOOGLE_APPLICATION_CREDENTIALS=/path/to/key.json"
 
 **Check service logs:**
 ```bash
-journalctl --user -u octavia-bug-triage.service --no-pager
-systemctl --user status octavia-bug-triage.service
+journalctl --user -u openstack-bug-triage.service --no-pager
+systemctl --user status openstack-bug-triage.service
 ```
 
 **Test command directly:**
 ```bash
-~/.venv/claude-agents/bin/octavia-triage-bugs
+~/.venv/claude-agents/bin/openstack-triage-bugs
 ```
 
 **Verify timer next run:**
 ```bash
-systemctl --user list-timers octavia-bug-triage.timer
+systemctl --user list-timers openstack-bug-triage.timer
 ```
 
 **Common issues:**

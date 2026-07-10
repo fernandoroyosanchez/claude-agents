@@ -1,4 +1,4 @@
-"""Setup script for Octavia Backport Agent."""
+"""Setup script for OpenStack Backport Agent."""
 from setuptools import setup, find_packages
 from pathlib import Path
 
@@ -6,7 +6,7 @@ readme_file = Path(__file__).parent / "README.md"
 long_description = readme_file.read_text() if readme_file.exists() else ""
 
 setup(
-    name="octavia-backport-agent",
+    name="openstack-backport-agent",
     version="1.0.0",
     description="Automated backport monitor and review agent for OpenStack Octavia",
     long_description=long_description,
@@ -33,8 +33,8 @@ setup(
 
     entry_points={
         "console_scripts": [
-            "octavia-backport-monitor=backport_monitor:cli_main",
-            "octavia-backport-review=backport_review_agent:cli_main",
+            "openstack-backport-monitor=backport_monitor:cli_main",
+            "openstack-backport-review=backport_review_agent:cli_main",
         ],
     },
 

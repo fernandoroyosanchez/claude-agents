@@ -2,7 +2,7 @@
 from setuptools import setup, find_packages
 
 setup(
-    name="octavia-devstack-test-agent",
+    name="openstack-devstack-test-agent",
     version="1.0.0",
     description="AI-powered DevStack integration testing agent for OpenStack code reviews",
     author="Richard Cruise",
@@ -15,7 +15,7 @@ setup(
     ],
     entry_points={
         "console_scripts": [
-            "octavia-devstack-test=devstack_test_agent:cli_main",
+            "openstack-devstack-test=devstack_test_agent:cli_main",
         ],
     },
     package_data={

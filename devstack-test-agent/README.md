@@ -44,7 +44,7 @@ cd ~/git/claude-agents/devstack-test-agent
 ./install.sh --no-systemd  # install package only
 ```
 
-This installs the `octavia-devstack-test` command into `~/.venv/claude-agents`.
+This installs the `openstack-devstack-test` command into `~/.venv/claude-agents`.
 
 ### Configure
 
@@ -85,7 +85,7 @@ Edit `config.json`:
 ### Manual Execution
 
 ```bash
-octavia-devstack-test
+openstack-devstack-test
 ```
 
 ### Automated with systemd
@@ -94,14 +94,14 @@ The agent is designed to run automatically via systemd path watcher:
 
 ```bash
 # Enable path watcher (watches ~/octavia_reviews/)
-systemctl --user enable octavia-devstack-test.path
-systemctl --user start octavia-devstack-test.path
+systemctl --user enable openstack-devstack-test.path
+systemctl --user start openstack-devstack-test.path
 
 # Check status
-systemctl --user status octavia-devstack-test.path
+systemctl --user status openstack-devstack-test.path
 
 # View logs
-journalctl --user -u octavia-devstack-test.service -f
+journalctl --user -u openstack-devstack-test.service -f
 ```
 
 **How it works:**
